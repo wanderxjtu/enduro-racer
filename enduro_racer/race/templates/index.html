@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="enduro-racer" ng-strict-di>
+<head>
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/race.css">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="col-md-3 col-md-offset-3 col-md-11">
+            <div class="text-center">
+                <img width="150px" src="{{ STATIC_PREFIX }}images/hbike_logo.png" alt="Hbike logo">
+            </div>
+        </div>
+    </div>
+</header>
+
+
+{% block navbar %}
+<nav class="navbar navbar-default"
+     ng-include="'{{ STATIC_PREFIX }}partial/navbar.html'"
+     role="navigation">
+</nav>
+{% endblock %}
+
+<div class="container" ng-controller="BaseCtrl">
+    {% block content %}
+    <div ng-view></div>
+    {% endblock %}
+</div>
+<!--<div class="container">-->
+    <!--ng-include="'{{ STATIC_PREFIX }}partial/competitions.html'"-->
+<!--</div>-->
+<footer>
+    <div class="container text-center col-xs-6">
+        <img width="100%" src="{{ STATIC_PREFIX }}images/HIBP.jpg" style="cursor:pointer" border="0"
+             alt="HIBP banner">
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular.min.js"
+        integrity="sha256-G+QuLmrpPCq07dbFF1iKLjl3nL6Mvv1qVoMzLVyHpp0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-route.min.js"
+        integrity="sha256-l5Hd3fjavvxOOSwZeVCkbMT4KAeMEfLwQnSzjudC/4s=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-cookies.min.js"
+        integrity="sha256-aEYm74tjwVDZYhSx9lpGzHspabSCNRDN4YrT2RMOt1c=" crossorigin="anonymous"></script>
+<script src="{{ STATIC_PREFIX }}js/enduro-racer.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var STATIC = {{ STATIC_PREFIX }};
+    var ROOT = {{ request.path }};
+
+
+
+
+
+</script>
+</body>
+
+</html>
