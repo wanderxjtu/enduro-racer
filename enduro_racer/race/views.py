@@ -1,14 +1,24 @@
 from datetime import datetime
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import TemplateView
+from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 
 from .models.competition import Competition
+
+
+def model_to_dict(model):
+    if isinstance(model, Model):
+        d = {}
+        for f in model._meta.fields:
+            d[f.name] = model_to_dict(getattr(model, f.name))
+        return d
+    return model
 
 
 class IndexView(TemplateView):
@@ -17,7 +27,8 @@ class IndexView(TemplateView):
 
 class JsonViewMixin:
     def render_to_response(self, context, **response_kwargs):
-        return JsonResponse(**context, **response_kwargs)
+        obj = context['object']
+        return JsonResponse({'object': model_to_dict(obj)}, **response_kwargs)
 
 
 class JsonListViewMixin:
@@ -35,7 +46,6 @@ class CompetitionListView(JsonListViewMixin, BaseListView):
     ordering = ["-startDate", "-endDate"]
 
 
-class CompetitionDetailView(DetailView):
-    # template_name = "competition.html"
+class CompetitionDetailView(JsonViewMixin, BaseDetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])

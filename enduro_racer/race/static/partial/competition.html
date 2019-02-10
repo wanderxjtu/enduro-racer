@@ -1,0 +1,17 @@
+<div ng-controller="CompetitionCtrl" class="container">
+    <div ng-show="comp === null" class="text-center container">
+        <i class="fa fa-spinner fa-spin fa-4x"></i>
+    </div>
+
+    <div class="container row" ng-if="comp !== null">
+        <div class="col-xs-12 col-md-8 offset-md-2 row container">
+            <div class="col-xs-12 col-sm-6 col-lg-4 mr-auto">
+                <h3>{{ comp.name }}</h3>
+                <p>{{ comp.summary }}</p>
+                <p>{{ comp.location }}</p>
+                <p>{{ comp.groups }}</p>
+                <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
+            </div>
+        </div>
+    </div>
+</div>

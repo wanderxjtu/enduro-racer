@@ -197,13 +197,41 @@ angular
         .get($scope.API + "competitions/", { params: { verbose: true } })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
-//          console.log(response, 'res');
         },function(error) {
           console.error("Fetching competitions failed");
         });
 
       $scope.showCompetition = function(comp) {
-        $location.path(comp);
+        console.log(comp)
+        $location.path("/competition/" + comp);
+      };
+    }
+  ])
+  .controller("CompetitionCtrl", [
+    "$scope",
+    "$http",
+    "$route",
+    "$cookies",
+    function($scope, $http, $route, $cookies) {
+      $scope.$cookies = $cookies;
+      $scope.comp_uniname = $route.current.params.comp
+
+      if (NEED_ADMIN) {
+        $location.path("/new_admin");
+      }
+
+      $http
+        .get($scope.API + "competition/" + $scope.comp_uniname)
+        .then(function(response) {
+          console.log(response.data)
+          $scope.comp = response.data.object;
+        },function(error) {
+          console.error("Fetching competition failed");
+        });
+
+      $scope.showCompetition = function(comp) {
+        console.log(comp)
+        $location.path("/competition/" + comp);
       };
     }
   ])
@@ -300,67 +328,6 @@ angular
               $scope.errorMsg = "Error during registration: " + data.message;
             }
           });
-      };
-    }
-  ])
-  .controller("TableCtrl", [
-    "$scope",
-    "$sce",
-    "$interpolate",
-    function($scope, $sce, $interpolate) {
-      $scope.currentPage = 1;
-      $scope.searchable = false;
-      $scope.searchStrict = false;
-      $scope.pageSize = 10;
-      $scope.maxSize = 8;
-      $scope.items = [];
-      $scope.columns = [];
-      $scope.title = "";
-      $scope.ordering = "toString()";
-      $scope.rowClick = null;
-
-      // For making the table mutable
-      $scope.disableEdits = false;
-      $scope.addItems = null;
-      $scope.addCallback = null;
-      $scope.deleteText = "Delete";
-      $scope.deleteCallback = null;
-      $scope.deleteButtonElement = null;
-
-      // Set arguments from parent scope
-      if (_.isObject($scope.tableArgs)) {
-        _.each($scope.tableArgs, function(value, key) {
-          $scope[key] = value;
-        });
-      }
-
-      if ($scope.rowClick === null) {
-        $scope.rowClick = function() {};
-        $scope.clickable = false;
-      } else {
-        $scope.clickable = true;
-      }
-
-      // TODO: put a scope.watch() on tableArgs
-
-      $scope.compile = function(html, item) {
-        return $sce.trustAsHtml($interpolate(html)({ item: item }));
-      };
-
-      $scope.toggleShowAdd = function() {
-        $scope.showAdd = !$scope.showAdd;
-        if (!$scope.showAdd) {
-          $scope.newItem = "";
-          $scope.errorMsg = undefined;
-          $scope.showAdd = false;
-        }
-      };
-
-      $scope.addItem = function() {
-        $scope.errorMsg = $scope.addCallback($scope.newItem);
-        if ($scope.errorMsg === undefined) {
-          $scope.newItem = "";
-        }
       };
     }
   ])
