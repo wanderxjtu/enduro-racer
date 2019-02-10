@@ -6,11 +6,11 @@ String.prototype.endsWith = function(suffix) {
 };
 
 angular
-  .module("enduro-racer", [])
-//    "ui.bootstrap",
-//    "ngRoute",
-//    "ngCookies"
-//  ])
+  .module("enduro-racer", [
+    "ui.bootstrap",
+    "ngRoute",
+    "ngCookies"
+  ])
   .config([
     "$routeProvider",
     function($routeProvider) {
@@ -39,7 +39,6 @@ angular
       });
     }
   ])
-  /*
   .config([
     "$compileProvider",
     function($compileProvider) {
@@ -185,7 +184,7 @@ angular
     "$cookies",
     function($scope, $http, $location, $cookies) {
       $scope.$cookies = $cookies;
-      $scope.packages = null;
+      $scope.competitions = null;
       $scope.pageSize = 10;
       $scope.maxSize = 8;
       $scope.currentPage = 1;
@@ -196,10 +195,10 @@ angular
 
       $http
         .get($scope.API + "competitions/", { params: { verbose: true } })
-        .success(function(data, status, headers, config) {
-          $scope.packages = data.competitions;
-        })
-        .error(function(data, status, headers, config) {
+        .then(function(response) {
+          $scope.competitions = response.data.competitions;
+//          console.log(response, 'res');
+        },function(error) {
           console.error("Fetching competitions failed");
         });
 
@@ -302,104 +301,6 @@ angular
             }
           });
       };
-    }
-  ])
-  .controller("PackageCtrl", [
-    "$scope",
-    "$http",
-    "$route",
-    "$fileUploader",
-    function($scope, $http, $route, $fileUploader) {
-      $scope.package_name = $route.current.params.pkg;
-      $scope.showPreRelease = true;
-      $scope.packages = null;
-      $scope.pageSize = 10;
-      $scope.maxSize = 8;
-      $scope.currentPage = 1;
-
-      $scope.filterPreRelease = function(pkg) {
-        if ($scope.showPreRelease) {
-          return true;
-        }
-        return pkg.version.match(/^\d+(\.\d+)*$/);
-      };
-
-      $http
-        .get($scope.API + "package/" + $scope.package_name)
-        .success(function(data, status, headers, config) {
-          $scope.packages = data.packages;
-          $scope.filtered = data.packages;
-          $scope.can_write = data.write;
-        })
-        .error(function(data, status, headers, config) {
-          console.error(
-            "Fetching package list failed for:",
-            $scope.package_name
-          );
-        });
-
-      $scope.deletePackage = function(pkg) {
-        var index = $scope.packages.indexOf(pkg);
-        pkg.deleting = true;
-        var data = {
-          name: $scope.package_name
-        };
-        var url =
-          $scope.API + "package/" + $scope.package_name + "/" + pkg.filename;
-        $http({ method: "delete", url: url })
-          .success(function(data, status, headers, config) {
-            $scope.packages.splice(index, 1);
-          })
-          .error(function(data, status, headers, config) {
-            pkg.deleting = false;
-            alert("Error deleting package");
-          });
-      };
-
-      $scope.uploadFinished = function(response) {
-        $scope.packages.unshift(response);
-        $scope.uploadCollapsed = true;
-      };
-    }
-  ])
-  .controller("UploadCtrl", [
-    "$scope",
-    "$fileUploader",
-    function($scope, $fileUploader) {
-      var uploader = ($scope.uploader = $fileUploader.create({
-        scope: $scope,
-        alias: "content"
-      }));
-
-      $scope.canUpload = function() {
-        return uploader.queue.length === 1 && !$scope.uploading;
-      };
-
-      $scope.uploadPackage = function() {
-        $scope.uploading = true;
-        var item = uploader.queue[0];
-        var filename = item.file.name;
-        if ($scope.package_name) {
-          item.url =
-            $scope.API + "package/" + $scope.package_name + "/" + filename;
-        } else {
-          item.url = $scope.ROOT + "simple/";
-        }
-        item.upload();
-      };
-
-      uploader.bind("success", function(event, xhr, item, response) {
-        uploader.clearQueue();
-        $scope.uploading = false;
-        if ($scope.uploadFinished !== undefined) {
-          $scope.uploadFinished(response);
-        }
-      });
-
-      uploader.bind("error", function(event, xhr, item, response) {
-        $scope.uploading = false;
-        alert("Error during upload! " + response);
-      });
     }
   ])
   .controller("TableCtrl", [
@@ -519,4 +420,3 @@ angular
       };
     }
   ]);
-*/

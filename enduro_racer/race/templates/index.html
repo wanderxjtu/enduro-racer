@@ -50,14 +50,16 @@
         integrity="sha256-l5Hd3fjavvxOOSwZeVCkbMT4KAeMEfLwQnSzjudC/4s=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-cookies.min.js"
         integrity="sha256-aEYm74tjwVDZYhSx9lpGzHspabSCNRDN4YrT2RMOt1c=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js" integrity="sha256-6vbKDGwy9JmzGKxxeypGzCjyOmACDtgheaOQT6ZVafA=" crossorigin="anonymous"></script>
 <script src="{{ STATIC_PREFIX }}js/enduro-racer.js"></script>
 <script type="text/javascript" charset="utf-8">
     var STATIC = {{ STATIC_PREFIX }};
     var ROOT = {{ request.path }};
-
-
-
-
+    var _ = "";
+    var USER = "mock";
+    var IS_ADMIN = true;
+    var NEED_ADMIN = false;
+    var SECURE_COOKIE = true;
 
 </script>
 </body>
