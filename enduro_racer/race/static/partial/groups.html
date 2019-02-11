@@ -16,7 +16,7 @@
                     <th scope="col">TEAM</th>
                 </tr>
                 </thead>
-                <tbody ng-repeat="racer in racers">
+                <tbody ng-repeat="racer in racers | orderBy: 'racerTag'">
                 <tr scope="row">
                     <td scope="row">{{ racer.racerTag}}</td>
                     <td>{{ racer.racerId.realName}}</td>
