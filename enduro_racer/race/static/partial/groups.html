@@ -3,10 +3,10 @@
         <i class="fa fa-spinner fa-spin fa-4x"></i>
     </div>
 
-    <div class="container row" ng-if="groups !== null">
+    <div class="container mt-2" ng-if="groups !== null">
         <div class="col-xs-12 col-md-8 offset-md-2 container"
-             ng-repeat="group in groups">
-            <h5 class="card-title">{{ group.name }}</h5>
+             ng-repeat="(groupname, racers) in groups | groupBy: 'group'">
+            <h5 class="card-title text-center">{{ groupname }} Group: {{ racers.length }} Racers</h5>
             <table class="table">
                 <thead>
                 <tr>
@@ -16,7 +16,7 @@
                     <th scope="col">TEAM</th>
                 </tr>
                 </thead>
-                <tbody ng-repeat="racer in group.racers">
+                <tbody ng-repeat="racer in racers">
                 <tr scope="row">
                     <td scope="row">{{ racer.racerTag}}</td>
                     <td>{{ racer.racerId.realName}}</td>

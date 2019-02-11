@@ -9,7 +9,8 @@ angular
   .module("enduro-racer", [
     "ui.bootstrap",
     "ngRoute",
-    "ngCookies"
+    "ngCookies",
+    "angular.filter"
   ])
   .config([
     "$routeProvider",
@@ -22,6 +23,11 @@ angular
       $routeProvider.when("/competition/:comp", {
         templateUrl: STATIC + "partial/competition.html",
         controller: "CompetitionCtrl"
+      });
+
+      $routeProvider.when("/competition/:comp/groups", {
+        templateUrl: STATIC + "partial/groups.html",
+        controller: "GroupsCtrl"
       });
 
       $routeProvider.when("/new_admin", {
@@ -233,6 +239,28 @@ angular
         console.log(comp)
         $location.path("/competition/" + comp);
       };
+    }
+  ])
+  .controller("GroupsCtrl", [
+    "$scope",
+    "$http",
+    "$route",
+    "$cookies",
+    function($scope, $http, $route, $cookies) {
+      $scope.$cookies = $cookies;
+      $scope.comp_uniname = $route.current.params.comp
+
+      if (NEED_ADMIN) {
+        $location.path("/new_admin");
+      }
+
+      $http
+        .get($scope.API + "competition/" + $scope.comp_uniname + "/group/")
+        .then(function(response) {
+          $scope.groups = response.data.groups;
+        },function(error) {
+          console.error("Fetching competition failed");
+        });
     }
   ])
   .controller("LoginCtrl", [

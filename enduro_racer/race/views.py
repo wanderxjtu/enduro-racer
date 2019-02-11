@@ -1,5 +1,7 @@
 import logging
 
+from race.models.racer import RacerLog
+
 LOGGER = logging.getLogger(__file__)
 from datetime import datetime
 
@@ -38,9 +40,8 @@ class JsonListViewMixin:
     def render_to_response(self, context, **response_kwargs):
         objname = self.get_context_object_name(context["object_list"])
         objs = context[objname]
-        if isinstance(objs, QuerySet):
-            objs = list(objs.values())
-        return JsonResponse({objname: objs}, **response_kwargs)
+
+        return JsonResponse({objname: [model_to_dict(obj) for obj in objs]}, **response_kwargs)
 
 
 class CompetitionListView(JsonListViewMixin, BaseListView):
@@ -51,6 +52,14 @@ class CompetitionListView(JsonListViewMixin, BaseListView):
         if self.request.GET.get("showOpen", False) == "true":
             return Competition.objects.filter(signUpOpen=True)
         return Competition.objects.all()
+
+
+class CompetitionGroupListView(JsonListViewMixin, BaseListView):
+    context_object_name = 'groups'
+
+    def get_queryset(self):
+        obj = get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])
+        return RacerLog.objects.filter(competitionId=obj.id)
 
 
 class CompetitionDetailView(JsonViewMixin, BaseDetailView):
