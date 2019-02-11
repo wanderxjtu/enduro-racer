@@ -20,8 +20,14 @@ class User(models.Model):
     racer = models.ForeignKey(RacerInfo, on_delete=models.SET_NULL, null=True, blank=True)
     role = models.IntegerField(choices=[(s.value, s) for s in Role], default=Role.NormalUser.value)  # pointed to role
 
+    def __str__(self):
+        return self.displayname
+
 
 class Oauth(models.Model):
     oauthtype = models.CharField(max_length=255)
     oauthname = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.displayname

@@ -30,6 +30,9 @@ class Team(models.Model):
     leaderName = models.CharField(max_length=255)
     leaderPhone = models.CharField(max_length=32)
 
+    def __str__(self):
+        return self.name
+
 
 class RacerInfo(models.Model):
     # racer signup infomation
@@ -41,6 +44,9 @@ class RacerInfo(models.Model):
                                       default=IdType.Identity.value)
     idNumber = models.CharField(max_length=255)  # id number or passport number
     phoneNumber = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.realName
 
 
 class RacerLog(models.Model):
@@ -54,6 +60,9 @@ class RacerLog(models.Model):
     rank = models.SmallIntegerField(null=True, blank=True)
     points = models.SmallIntegerField(null=True, blank=True)
 
+    def __str__(self):
+        return "%s-$s".format(self.racerTag, self.racerId.realName)
+
 
 class RacerResults(models.Model):
     # One competition may have multiple result records,
@@ -62,3 +71,6 @@ class RacerResults(models.Model):
     launchTime = models.DateTimeField()
     finishTime = models.DateTimeField()
     punishment = models.IntegerField()  # seconds, -(negative) for reward
+
+    def __str__(self):
+        return self.racerLogId.racerId.realName
