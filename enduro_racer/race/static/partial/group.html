@@ -1,0 +1,30 @@
+<div ng-controller="GroupsCtrl" class="container">
+    <div ng-show="groups === null" class="text-center container">
+        <i class="fa fa-spinner fa-spin fa-4x"></i>
+    </div>
+
+    <div class="container row" ng-if="groups !== null">
+        <div class="col-xs-12 col-md-8 offset-md-2 container"
+             ng-repeat="group in groups">
+            <h5 class="card-title">{{ group.name }}</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">GENDER</th>
+                    <th scope="col">TEAM</th>
+                </tr>
+                </thead>
+                <tbody ng-repeat="racer in group.racers">
+                <tr scope="row">
+                    <td scope="row">{{ racer.racerTag}}</td>
+                    <td>{{ racer.racerId.realName}}</td>
+                    <td>{{ racer.racerId.gender}}</td>
+                    <td>{{ racer.teamId.name}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

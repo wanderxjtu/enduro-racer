@@ -1,3 +1,6 @@
+import logging
+
+LOGGER = logging.getLogger(__file__)
 from datetime import datetime
 
 from django.db.models import QuerySet, Model
@@ -42,8 +45,12 @@ class JsonListViewMixin:
 
 class CompetitionListView(JsonListViewMixin, BaseListView):
     context_object_name = 'competitions'
-    queryset = Competition.objects.filter(signUpOpen=True)
     ordering = ["-startDate", "-endDate"]
+
+    def get_queryset(self):
+        if self.request.GET.get("showOpen", False) == "true":
+            return Competition.objects.filter(signUpOpen=True)
+        return Competition.objects.all()
 
 
 class CompetitionDetailView(JsonViewMixin, BaseDetailView):

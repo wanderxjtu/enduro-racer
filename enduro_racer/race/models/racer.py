@@ -48,6 +48,7 @@ class RacerLog(models.Model):
     competitionId = models.ForeignKey(Competition, on_delete=models.DO_NOTHING)  # competition
     teamId = models.ForeignKey(Team, on_delete=models.DO_NOTHING)  # pointed to team
     group = models.CharField(max_length=32)
+    racerTag = models.CharField(max_length=16)  # number plate
     status = models.SmallIntegerField(choices=[(s.value, s) for s in RacerStatus],
                                       default=RacerStatus.WaitForPayment.value)
     rank = models.SmallIntegerField(null=True, blank=True)

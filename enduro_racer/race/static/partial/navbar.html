@@ -1,65 +1,36 @@
-<div class="container" ng-controller="NavbarCtrl">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" ng-click="navCollapsed = !navCollapsed">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+<nav class="navbar navbar-expand-sm navbar-light bg-light" ng-controller="NavbarCtrl">
+    <div class="container">
+        <div class="mr-auto"></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" ng-href="{{ ROOT }}#" title="{{ VERSION }}">
-            <i class="fa fa-cloud text-primary" style="opacity: 0.7"></i>
-            Pypicloud
-        </a>
-    </div>
 
-    <div class="nav-collapse" collapse="navCollapsed" style="font-size: 130%">
-        <ul class="nav navbar-nav">
-            <li ng-repeat="option in options" ng-class="location.path === option.path ? 'active' : ''">
-                <a ng-href="#{{ option.path }}">{{ option.title }}</a>
-            </li>
-            <li ng-if="IS_ADMIN">
-                <a href="#/admin">Admin</a>
-            </li>
-        </ul>
-
-        <div ng-switch on="USER">
-            <div ng-switch-when="null">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a ng-href="{{ ROOT }}login">Log in</a>
-                    </li>
-                </ul>
-            </div>
-            <div ng-switch-default>
-                <ul class="nav navbar-nav navbar-right hidden-xs">
-
-                    <!-- Destop has a dropdown -->
-                    <li class="dropdown">
-                        <a class="btn dropdown-toggle">
-                            {{ USER }} <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li ng-show="ACCESS_MUTABLE">
-                                <a href="#/account">Account</a>
-                            </li>
-                            <li class="divider" ng-show="ACCESS_MUTABLE"></li>
-                            <li style="opacity: 0.6">
-                                <a ng-href="{{ ROOT }}logout">Log out</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <!-- Mobile puts it inline for the collapsed nav menu -->
-                <ul class="nav navbar-nav navbar-right visible-xs">
-                    <li ng-show="ACCESS_MUTABLE">
-                        <a href="#/account">Account</a>
-                    </li>
-                    <li style="opacity: 0.6">
-                        <a ng-href="{{ ROOT }}logout">Log out</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="btn nav-link dropdown-toggle ng-binding">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="navbarDropdown">
+                        <li ng-show="ACCESS_MUTABLE" class="dropdown-item"><a href="{{ ROOT }}account">Account</a></li>
+                        <div class="dropdown-divider"></div>
+                        <li ng-show="ACCESS_MUTABLE" class="dropdown-item"><a href="{{ ROOT }}account">Account</a></li>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
-</div>
+</nav>
+

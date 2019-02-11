@@ -9,15 +9,23 @@
         <i class="fa fa-spinner fa-spin fa-4x"></i>
     </div>
 
-    <div class="container row" ng-if="competitions !== null">
-        <div class="col-xs-12 col-md-8 offset-md-2 row container">
-            <div class="col-xs-12 col-sm-6 col-lg-4 mr-auto"
-                 ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize"
-                 ng-click="showCompetition(comp.uniname)">
-                <h3>{{ comp.name }}</h3>
-                <p>{{ comp.summary }}</p>
-                <p>{{ comp.location }}</p>
-                <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
+    <div class="col-12 container" ng-if="competitions !== null">
+        <div class="col-xs-12 col-lg-8 col-lg-offset-2 container-fluid">
+            <div class="row">
+                <div class="col-xs-12 col-md-6 container"
+                     ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize"
+                     ng-click="showCompetition(comp.uniname)">
+                    <div class="card mb-1 hibp-card">
+                        <div class="card-body col-xs-12">
+                            <h5 class="card-title">{{ comp.name }}</h5>
+                            <h6 class="card-subtitle">{{ comp.location }}</h6>
+                            <!--<p>{{ comp.description }}</p>-->
+                            <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
+                            <a class="btn btn-primary" href="#" ng-click="showCompetition(comp.uniname)">SignUp</a>
+                            <a class="btn" href="#" ng-click="showCompetition(comp.uniname)">View Group</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="text-center" ng-show="filtered.length > pageSize">
                 <pagination direction-links="true" total-items="filtered.length" rotate="false" max-size="maxSize"

@@ -11,23 +11,16 @@
     <title>{{ page_title }}</title>
 </head>
 <body>
-<header>
-    <div class="container">
-        <div class="col-md-3 col-md-offset-3 col-md-11">
-            <div class="text-center">
-                <img width="150px" src="{{ STATIC_PREFIX }}images/hbike_logo.png" alt="Hbike logo">
-            </div>
-        </div>
+<header class="header">
+    {% block navbar %}
+    <div ng-include="'{{ STATIC_PREFIX }}partial/navbar.html'"
+         role="navigation">
     </div>
+
+    {% endblock %}
+    <div class="navbar-brand"></div>
 </header>
 
-
-{% block navbar %}
-<nav class="navbar navbar-default"
-     ng-include="'{{ STATIC_PREFIX }}partial/navbar.html'"
-     role="navigation">
-</nav>
-{% endblock %}
 
 <div class="container" ng-controller="BaseCtrl">
     {% block content %}
@@ -35,13 +28,12 @@
     {% endblock %}
 </div>
 <!--<div class="container">-->
-    <!--ng-include="'{{ STATIC_PREFIX }}partial/competitions.html'"-->
+<!--ng-include="'{{ STATIC_PREFIX }}partial/competitions.html'"-->
 <!--</div>-->
-<footer>
-    <div class="container text-center col-xs-6">
-        <img width="100%" src="{{ STATIC_PREFIX }}images/HIBP.jpg" style="cursor:pointer" border="0"
-             alt="HIBP banner">
-    </div>
+<footer class="mt-4">
+    <div class="hibp-footer col-12 pl-0 pr-0"></div>
+    <!--<img width="100%" src="{{ STATIC_PREFIX }}images/HIBP.jpg" border="0"-->
+         <!--alt="HIBP banner">-->
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular.min.js"
@@ -50,13 +42,14 @@
         integrity="sha256-l5Hd3fjavvxOOSwZeVCkbMT4KAeMEfLwQnSzjudC/4s=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-cookies.min.js"
         integrity="sha256-aEYm74tjwVDZYhSx9lpGzHspabSCNRDN4YrT2RMOt1c=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js" integrity="sha256-6vbKDGwy9JmzGKxxeypGzCjyOmACDtgheaOQT6ZVafA=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"
+        integrity="sha256-6vbKDGwy9JmzGKxxeypGzCjyOmACDtgheaOQT6ZVafA=" crossorigin="anonymous"></script>
 <script src="{{ STATIC_PREFIX }}js/enduro-racer.js"></script>
 <script type="text/javascript" charset="utf-8">
     var STATIC = {{ STATIC_PREFIX }};
     var ROOT = {{ request.path }};
     var _ = "";
-    var USER = "mock";
+    var USER = null;
     var IS_ADMIN = true;
     var NEED_ADMIN = false;
     var SECURE_COOKIE = true;

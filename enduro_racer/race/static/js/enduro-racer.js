@@ -173,7 +173,7 @@ angular
   .controller("NavbarCtrl", [
     "$scope",
     function($scope) {
-      $scope.navCollapsed = $scope.device === "xs";
+      $scope.navCollapsed = true; //$scope.device === "xs";
       $scope.options = [];
     }
   ])
@@ -185,6 +185,7 @@ angular
     function($scope, $http, $location, $cookies) {
       $scope.$cookies = $cookies;
       $scope.competitions = null;
+      $scope.showOpen = true;
       $scope.pageSize = 10;
       $scope.maxSize = 8;
       $scope.currentPage = 1;
@@ -194,7 +195,7 @@ angular
 
 
       $http
-        .get($scope.API + "competitions/", { params: { verbose: true } })
+        .get($scope.API + "competitions/", { params: { showOpen: $scope.showOpen} })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
         },function(error) {
@@ -202,7 +203,6 @@ angular
         });
 
       $scope.showCompetition = function(comp) {
-        console.log(comp)
         $location.path("/competition/" + comp);
       };
     }
