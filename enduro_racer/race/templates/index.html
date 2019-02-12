@@ -52,7 +52,7 @@
     var STATIC = {{ STATIC_PREFIX }};
     var ROOT = {{ request.path }};
     var _ = "";
-    var USER = null;
+    var USER = "{{ request.user }}";
     var IS_ADMIN = true;
     var NEED_ADMIN = false;
     var SECURE_COOKIE = true;

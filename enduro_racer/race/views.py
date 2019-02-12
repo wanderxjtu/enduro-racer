@@ -77,3 +77,7 @@ class CompetitionDetailView(JsonViewMixin, BaseDetailView):
     def get_object(self, queryset=None):
         qs = Competition.objects.select_related('serialId__name').values()
         return get_object_or_404(qs, uniname=self.kwargs['competition_uniname'])
+
+
+class CompetitionSignupView(JsonViewMixin, BaseDetailView):
+    pass

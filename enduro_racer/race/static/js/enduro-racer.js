@@ -30,6 +30,11 @@ angular
         controller: "GroupsCtrl"
       });
 
+      $routeProvider.when("/competition/:comp/signup", {
+        templateUrl: STATIC + "partial/signup.html",
+        controller: "CompetitionSignupCtrl"
+      });
+
       $routeProvider.when("/new_admin", {
         templateUrl: STATIC + "partial/new_admin.html",
         controller: "NewAdminCtrl"
@@ -242,6 +247,28 @@ angular
         console.log(comp)
         $location.path("/competition/" + comp);
       };
+    }
+  ])
+  .controller("CompetitionSignupCtrl", [
+    "$scope",
+    "$http",
+    "$route",
+    "$cookies",
+    function($scope, $http, $route, $cookies) {
+      $scope.$cookies = $cookies;
+      $scope.comp_uniname = $route.current.params.comp
+
+      if (NEED_ADMIN) {
+        $location.path("/new_admin");
+      }
+
+      $http
+        .get($scope.API + "competition/" + $scope.comp_uniname + "/signup/")
+        .then(function(response) {
+          $scope.groups = response.data.groups;
+        },function(error) {
+          console.error("Fetching competition failed");
+        });
     }
   ])
   .controller("GroupsCtrl", [

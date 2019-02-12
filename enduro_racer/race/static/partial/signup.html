@@ -1,0 +1,84 @@
+<div ng-controller="CompetitionSignupCtrl" class="container">
+    <div ng-show="comp === null" class="text-center container">
+        <i class="fa fa-spinner fa-spin fa-4x"></i>
+    </div>
+
+    <div class="container" ng-if="comp !== null">
+        <!--first to find racer info corresponding to currentUser, provide a NEW racer button to entering new
+        racer basic info-->
+        <form name="Competition Sign Up" class="form col-xs-12" novalidate>
+            <div class="col-xs-12 col-md-10 offset-md-1">
+                <div class="form-group row">
+                    <input class="form-check-inline" type="checkbox" ng-model="racer.new" name="New Racer" required=""/>
+                    <label class="form-check-label">New Racer</label>
+                </div>
+                <div class="form-group col-xs-12" ng-show="racer.new">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Name </label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" ng-model="racer.realName" name="realName"
+                                   required="required">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Gender </label>
+                        <div class="col-sm-9">
+                            <input class="form-check-inline" type="radio" ng-model="racer.gender" value="1"/>
+                            <label class="form-check-label">Male</label>
+                            <input class="form-check-inline" type="radio" ng-model="racer.gender" value="0"/>
+                            <label class="form-check-label">Female</label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Birthday</label>
+                        <div class="col-sm-9">
+                            <input class="form-check-inline" type="date" ng-model="racer.birthday" name="birthday"
+                                   ngRequired="birthday">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Region</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" maxlength="3" value="CHN" ng-model="racer.region"
+                                   name="region" ngRequired="region">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Id Type</label>
+                        <div class="col-sm-9">
+                            <input class="form-check-inline" type="radio" ng-model="racer.idType" value="0"/>
+                            <label class="form-check-label">Id No. (CHN)</label>
+                            <input class="form-check-inline" type="radio" ng-model="racer.idType" value="1"/>
+                            <label class="form-check-label">Passport</label>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="racer.idType == 0">
+                        <label class="col-sm-3 col-form-label">Id No. </label>
+                        <div class="col-sm-9" ng-if="racer.idType == 0">
+                            <input class="form-control" type="text" minlength="18" maxlength="18"
+                                   ng-model="racer.idNumber"
+                                   name="id number" ngRequired="id">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="racer.idType == 1">
+                        <label class="col-sm-3 col-form-label">Passport</label>
+                        <div class="col-sm-9" ng-if="racer.idType == 1">
+                            <input class="form-control" type="text" ng-model="racer.idNumber" name="passport number"
+                                   ngRequired="id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Cellphone </label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="number" ng-model="racer.phoneNumber" name="phone number"
+                                   ngRequired="phone">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="col-12">
+            <h3>{{ comp.name }}</h3>
+        </div>
+    </div>
+</div>

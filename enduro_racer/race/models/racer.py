@@ -54,7 +54,8 @@ class RacerInfo(models.Model):
     # racer signup infomation
     realName = models.CharField(max_length=255)
     gender = models.SmallIntegerField(choices=[(s.value, s) for s in Gender])
-    age = models.SmallIntegerField()
+    # age = models.SmallIntegerField()  # this should be calculate by birthday
+    birthday = models.DateField()
     region = models.CharField(max_length=4, default="CHN")  # iso code, default
     idType = models.SmallIntegerField(choices=[(s.value, s) for s in IdType],
                                       default=IdType.Identity.value)
