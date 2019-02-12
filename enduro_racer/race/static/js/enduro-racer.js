@@ -10,7 +10,7 @@ angular
     "ui.bootstrap",
     "ngRoute",
     "ngCookies",
-    "ngMessageFormat",
+//    "ngMessageFormat",
     "angular.filter"
   ])
   .config([
