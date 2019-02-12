@@ -22,17 +22,21 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Gender </label>
-                        <div class="col-sm-9">
-                            <input class="form-check-inline" type="radio" ng-model="racer.gender" value="1"/>
-                            <label class="form-check-label">Male</label>
-                            <input class="form-check-inline" type="radio" ng-model="racer.gender" value="0"/>
-                            <label class="form-check-label">Female</label>
+                        <div class="col-sm-9 row">
+                            <div class="col-sm-6">
+                                <input class="form-check-inline" type="radio" ng-model="racer.gender" value="1"/>
+                                <label class="form-check-label">Male</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input class="form-check-inline" type="radio" ng-model="racer.gender" value="0"/>
+                                <label class="form-check-label">Female</label>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Birthday</label>
                         <div class="col-sm-9">
-                            <input class="form-check-inline" type="date" ng-model="racer.birthday" name="birthday"
+                            <input class="form-control" type="date" ng-model="racer.birthday" name="birthday"
                                    ngRequired="birthday">
                         </div>
                     </div>
@@ -45,11 +49,15 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Id Type</label>
-                        <div class="col-sm-9">
-                            <input class="form-check-inline" type="radio" ng-model="racer.idType" value="0"/>
-                            <label class="form-check-label">Id No. (CHN)</label>
-                            <input class="form-check-inline" type="radio" ng-model="racer.idType" value="1"/>
-                            <label class="form-check-label">Passport</label>
+                        <div class="col-sm-9 row">
+                            <div class="col-sm-6">
+                                <input class="form-check-inline" type="radio" ng-model="racer.idType" value="0"/>
+                                <label class="form-check-label">Id No. (CHN)</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input class="form-check-inline" type="radio" ng-model="racer.idType" value="1"/>
+                                <label class="form-check-label">Passport</label>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row" ng-if="racer.idType == 0">
