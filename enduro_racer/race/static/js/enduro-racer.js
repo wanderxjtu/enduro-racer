@@ -107,6 +107,14 @@ angular
       });
     }
   ])
+  .filter("genderFromInt", function() {
+    return function(input) {
+      if (input == 0) {
+        return "Female";
+      }
+      return "Male";
+    }
+  })
   .filter("startFrom", function() {
     return function(input, start) {
       start = parseInt(start, 10);

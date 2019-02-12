@@ -20,7 +20,7 @@
                 <tr scope="row">
                     <td scope="row">{{ racer.racerTag}}</td>
                     <td>{{ racer.racerId__realName}}</td>
-                    <td>{{ racer.racerId__gender}}</td>
+                    <td>{{ racer.racerId__gender | genderFromInt }}</td>
                     <td>{{ racer.teamId__name}}</td>
                 </tr>
                 </tbody>
