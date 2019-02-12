@@ -8,11 +8,13 @@
         racer basic info-->
         <form name="Competition Sign Up" class="form col-xs-12" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
+                <!--Racer choices-->
                 <div class="form-group row">
                     <input class="form-check-inline" type="checkbox" ng-model="racer.new" name="New Racer" required=""/>
                     <label class="form-check-label">New Racer</label>
                 </div>
-                <div class="form-group col-xs-12" ng-show="racer.new">
+                <!--Racer Info-->
+                <div class="form-group col-xs-12" ng-show="racer.new || racer">
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Name </label>
                         <div class="col-sm-9">
@@ -83,7 +85,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group col-xs-12" ng-show="!racer.new">Racer</div>
+                <!--Team choices-->
+                <!--Team Info-->
+                <div class="form-group col-xs-12">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Team</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="racer.team" ng-model="racer.team">
+                                <option value="{{ }}"></option>
+                                <option>2</option>
+                                <option value="NEW">NEW TEAM</option>
+                            </select>
+                            <!--<input class="form-check-inline" type="checkbox" ng-model="team.new" name="New Racer"-->
+                            <!--required=""/>-->
+                        </div>
+                    </div>
+                </div>
+                <!--New Racer-->
+                <div class="form-group col-xs-12">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Group</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" ng-model="racer.group" name="Group"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
         <div class="col-12">
