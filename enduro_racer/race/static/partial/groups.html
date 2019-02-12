@@ -6,7 +6,10 @@
     <div class="container mt-2" ng-if="groups !== null">
         <div class="col-xs-12 col-md-8 offset-md-2 container"
              ng-repeat="(groupname, racers) in groups | groupBy: 'group'">
-            <h5 class="card-title text-center">{{ groupname }} Group: {{ racers.length }} Racers</h5>
+            <h5 class="card-title text-center">{{ groupname }} Group:
+                {{ racers.length, plural,
+                one { {{ racers.length }} Racer }
+                other { {{ racers.length }} Racers } }}</h5>
             <table class="table">
                 <thead>
                 <tr>
