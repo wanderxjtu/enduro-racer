@@ -1,11 +1,9 @@
 .navbar-brand {
   background: url(/static/images/hbike_logo.png) center / contain no-repeat;
-  transform: translateX(-50%);
-  left: 50%;
-  position: absolute;
-  top: 5px;
+  transform: translateY(-50%);
   height: 100px;
-  width: 100px;
+  width: 100%;
+
 }
 
 .header {
@@ -13,7 +11,7 @@
 }
 
 .navbar {
-  height: 55px;
+  min-height: 55px;
 }
 
 .hibp-card {
