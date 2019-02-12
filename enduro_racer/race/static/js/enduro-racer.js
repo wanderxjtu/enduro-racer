@@ -211,6 +211,9 @@ angular
       $scope.showCompetition = function(comp) {
         $location.path("/competition/" + comp);
       };
+      $scope.showCompetitionGroup = function(comp) {
+        $location.path("/competition/" + comp + "/groups/");
+      };
     }
   ])
   .controller("CompetitionCtrl", [

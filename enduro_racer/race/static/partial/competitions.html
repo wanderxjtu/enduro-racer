@@ -21,8 +21,8 @@
                             <h6 class="card-subtitle">{{ comp.location }}</h6>
                             <!--<p>{{ comp.description }}</p>-->
                             <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
-                            <a class="btn btn-primary" href="#" ng-click="showCompetition(comp.uniname)">SignUp</a>
-                            <a class="btn" href="#" ng-click="showCompetition(comp.uniname)">View Group</a>
+                            <a class="btn btn-primary" ng-click="showCompetition(comp.uniname)">SignUp</a>
+                            <a class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</a>
                         </div>
                     </div>
                 </div>

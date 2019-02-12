@@ -4,13 +4,16 @@
     </div>
 
     <div class="container row" ng-if="comp !== null">
-        <div class="col-xs-12 col-md-8 offset-md-2 row container">
-            <div class="col-xs-12 col-sm-6 col-lg-4 mr-auto">
+        <div class="col-xs-12 col-md-8 offset-md-2 container">
+            <div class="col-12">
                 <h3>{{ comp.name }}</h3>
-                <p>{{ comp.summary }}</p>
-                <p>{{ comp.location }}</p>
-                <p>{{ comp.groups }}</p>
-                <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
+                <p>{{ comp.serialId__name }}</p>
+                <p>{{ comp.description }}</p>
+                <p><i class="fas fa-layer-group"></i> {{ comp.groups }}</p>
+                <p><i class="fas fa-map-marker"></i> {{ comp.location }}</p>
+                <p>
+                    <i class="fas fa-calendar-day"></i> {{ comp.startDate | date:'yyyy-MM-dd' }}
+                    <i class="fas fa-arrow-circle-right"></i> {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
             </div>
         </div>
     </div>

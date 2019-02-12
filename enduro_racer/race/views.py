@@ -34,15 +34,6 @@ from django.views.generic.list import BaseListView
 from .models.competition import Competition
 
 
-def model_to_dict(model):
-    if isinstance(model, Model):
-        d = {}
-        for f in model._meta.fields:
-            d[f.name] = model_to_dict(getattr(model, f.name))
-        return d
-    return model
-
-
 class IndexView(TemplateView):
     template_name = "index.html"
 
@@ -50,7 +41,7 @@ class IndexView(TemplateView):
 class JsonViewMixin:
     def render_to_response(self, context, **response_kwargs):
         obj = context['object']
-        return JsonResponse({'object': model_to_dict(obj)}, **response_kwargs)
+        return JsonResponse({'object': obj}, **response_kwargs)
 
 
 class JsonListViewMixin:
@@ -58,7 +49,7 @@ class JsonListViewMixin:
         objname = self.get_context_object_name(context["object_list"])
         objs = context[objname]
 
-        return JsonResponse({objname: [model_to_dict(obj) for obj in objs]}, **response_kwargs)
+        return JsonResponse({objname: list(objs)}, **response_kwargs)
 
 
 class CompetitionListView(JsonListViewMixin, BaseListView):
@@ -66,19 +57,23 @@ class CompetitionListView(JsonListViewMixin, BaseListView):
     ordering = ["-startDate", "-endDate"]
 
     def get_queryset(self):
-        if self.request.GET.get("showOpen", False) == "true":
-            return Competition.objects.filter(signUpOpen=True)
-        return Competition.objects.all()
+        qs = Competition.objects.select_related('serialId')
+        qs = qs.filter(signUpOpen=True) if self.request.GET.get("showOpen", False) == "true" else qs.all()
+        return qs.values()
 
 
 class CompetitionGroupListView(JsonListViewMixin, BaseListView):
     context_object_name = 'groups'
 
     def get_queryset(self):
-        obj = get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])
-        return RacerLog.objects.filter(competitionId=obj.id)
+        # obj = get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])
+        return RacerLog.objects.select_related('competitionId__uniname', 'racerId__realName', 'racerId__gender',
+                                               'teamId__name').filter(
+            competitionId__uniname=self.kwargs['competition_uniname']).values('group', 'racerTag', 'racerId__realName',
+                                                                              'racerId__gender', 'teamId__name')
 
 
 class CompetitionDetailView(JsonViewMixin, BaseDetailView):
     def get_object(self, queryset=None):
-        return get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])
+        qs = Competition.objects.select_related('serialId__name').values()
+        return get_object_or_404(qs, uniname=self.kwargs['competition_uniname'])

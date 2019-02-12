@@ -19,9 +19,9 @@
                 <tbody ng-repeat="racer in racers | orderBy: 'racerTag'">
                 <tr scope="row">
                     <td scope="row">{{ racer.racerTag}}</td>
-                    <td>{{ racer.racerId.realName}}</td>
-                    <td>{{ racer.racerId.gender}}</td>
-                    <td>{{ racer.teamId.name}}</td>
+                    <td>{{ racer.racerId__realName}}</td>
+                    <td>{{ racer.racerId__gender}}</td>
+                    <td>{{ racer.teamId__name}}</td>
                 </tr>
                 </tbody>
             </table>
