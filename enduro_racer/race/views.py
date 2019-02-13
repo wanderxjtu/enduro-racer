@@ -17,7 +17,8 @@
 """
 import logging
 
-from race.models.racer import RacerLog
+from race.models.racer import RacerLog, Team
+from race.utils import get_model_all_fields_names
 
 LOGGER = logging.getLogger(__file__)
 from datetime import datetime
@@ -74,10 +75,24 @@ class CompetitionGroupListView(JsonListViewMixin, BaseListView):
 
 
 class CompetitionDetailView(JsonViewMixin, BaseDetailView):
+    # competition_fields = get_model_all_fields_names(Competition)
+
     def get_object(self, queryset=None):
-        qs = Competition.objects.select_related('serialId__name').values()
+        # print(self.competition_fields)
+        qs = Competition.objects.select_related('serialId__name').values('serialId__name', 'name', 'location',
+                                                                         'description', 'groupSetting',
+                                                                         'startDate', 'endDate', 'signUpOpen',
+                                                                         'uniname', 'signUpFee', 'signUpStartDate',
+                                                                         'signUpEndDate')
         return get_object_or_404(qs, uniname=self.kwargs['competition_uniname'])
 
 
 class CompetitionSignupView(JsonViewMixin, BaseDetailView):
     pass
+
+
+class TeamListView(JsonListViewMixin, BaseListView):
+    context_object_name = 'teams'
+
+    def get_queryset(self):
+        return Team.objects.all().values('id', 'name', 'leaderName')

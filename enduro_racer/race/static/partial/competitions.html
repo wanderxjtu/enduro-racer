@@ -13,18 +13,18 @@
         <div class="col-xs-12 col-xl-8 col-xl-offset-2 container-fluid">
             <div class="row">
                 <div class="col-xs-12 col-md-6 container"
-                     ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize"
-                     ng-click="showCompetition(comp.uniname)">
+                     ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
                     <div class="card mb-1 hibp-card">
-                        <div class="card-body col-xs-12">
+                        <div class="card-body col-xs-12" ng-click="showCompetition(comp.uniname)">
                             <h5 class="card-title">{{ comp.name }}</h5>
                             <h6 class="card-subtitle">{{ comp.location }}</h6>
                             <!--<p>{{ comp.description }}</p>-->
                             <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
-                            <div class="container ng-scope">
-                                <a href="" class="btn btn-primary" ng-click="showCompetitionGroup(comp.uniname)">SignUp</a>
-                                <a href="" class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</a>
-                            </div>
+                        </div>
+                        <div class="card-footer container">
+                            <a href="" class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp.uniname)">Sign
+                                Up</a>
+                            <a href="" class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</a>
                         </div>
                     </div>
                 </div>

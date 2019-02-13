@@ -114,7 +114,7 @@ angular
         return "Female";
       }
       return "Male";
-    }
+    };
   })
   .filter("startFrom", function() {
     return function(input, start) {
@@ -228,6 +228,9 @@ angular
       $scope.showCompetitionGroup = function(comp) {
         $location.path("/competition/" + comp + "/groups/");
       };
+      $scope.showCompetitionSignup = function(comp) {
+        $location.path("/competition/" + comp + "/signup/");
+      };
     }
   ])
   .controller("CompetitionCtrl", [
@@ -252,9 +255,9 @@ angular
           console.error("Fetching competition failed");
         });
 
-      $scope.showCompetition = function(comp) {
+      $scope.showCompetitionGroup = function(comp) {
         console.log(comp)
-        $location.path("/competition/" + comp);
+        $location.path("/competition/" + comp + "/groups/");
       };
     }
   ])
@@ -263,21 +266,35 @@ angular
     "$http",
     "$route",
     "$cookies",
-    function($scope, $http, $route, $cookies) {
+    "$window",
+    "$q",
+    function($scope, $http, $route, $cookies, $window, $q) {
       $scope.$cookies = $cookies;
-      $scope.comp_uniname = $route.current.params.comp
+      $scope.comp_uniname = $route.current.params.comp;
+      $scope.allregions = $window.alpha3regions;
+      $scope.today = new Date();
 
       if (NEED_ADMIN) {
         $location.path("/new_admin");
       }
 
-      $http
-        .get($scope.API + "competition/" + $scope.comp_uniname + "/signup/")
-        .then(function(response) {
-          $scope.groups = response.data.groups;
-        },function(error) {
-          console.error("Fetching competition failed");
-        });
+      // need User -> RacerInfo
+      // need teamList
+      $q.all([
+        $http.get($scope.API + "teams/"),
+        $http.get($scope.API + "competition/" + $scope.comp_uniname)
+        ]).then(function(response) {
+          $scope.teams = response[0].data.teams;
+          $scope.comp = response[1].data.object;
+      });
+      $scope.showCompetitionGroup = function(comp) {
+        $location.path("/competition/" + comp + "/groups/");
+      };
+
+      $scope.signUp= function(racer) {
+        console.log(racer);
+//        $location.path("/competition/" + comp + "/groups/");
+      };
     }
   ])
   .controller("GroupsCtrl", [

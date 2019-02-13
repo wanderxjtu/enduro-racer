@@ -21,3 +21,7 @@
   left: 50%;
   height: 150px;
 }
+
+input.ng-invalid.ng-touched {
+  background-color: #FA787E;
+}
