@@ -4,10 +4,10 @@ from wand.image import Image
 
 class Sy0324():
     template_path = path.join(path.dirname(path.abspath(__file__)),'image/sy0324.jpg')
-    name_pos = (250, 340)
-    cate_pos = (250, 395)
-    rank_pos = (293, 455)
-    result_pos = (350, 455)
+    name_pos = (300, 440)
+    cate_pos = (300, 512)
+    rank_pos = (382, 588)
+    result_pos = (450, 588)
     save_path = path.dirname(path.abspath(__file__))
 
     def __init__(self):

@@ -11,7 +11,7 @@ import math
 def get_draw():
     draw = Drawing()
     draw.font = '/Users/jiaqi/Library/Fonts/SourceHanSansSC/SourceHanSansSC-Bold.otf'
-    draw.font_size = 24
+    draw.font_size = 30
     draw.text_antialias = True
     return draw
 
