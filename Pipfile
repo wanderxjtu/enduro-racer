@@ -1,6 +1,7 @@
 [[source]]
 name = "pypi"
-url = "https://mirrors.aliyun.com/pypi/simple"
+#url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.antfin-inc.com/simple"
 verify_ssl = true
 
 [dev-packages]
@@ -10,6 +11,7 @@ django = "==2.1.5"
 django-allauth = "==0.38.0"
 django-jsonview = "*"
 django-enumfield = "==1.5"
+wand = "*"
 
 [requires]
 python_version = "3.7"
