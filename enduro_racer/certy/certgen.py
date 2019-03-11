@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import sys
 
 from wand.image import Image
 from wand.drawing import Drawing
@@ -25,4 +26,4 @@ def render_cert(name, rank, cate):
 
 
 if __name__ == "__main__":
-    render_cert("Jon Snow", "1", "公开组")
+    render_cert(*sys.argv[1:4])
