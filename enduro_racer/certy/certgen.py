@@ -12,12 +12,15 @@ def get_draw():
     draw = Drawing()
     draw.font = '/Users/jiaqi/Library/Fonts/SourceHanSansSC/SourceHanSansSC-Bold.otf'
     draw.font_size = 24
+    draw.text_antialias = True
     return draw
 
-def render_cert(name, rank, cate):
+def render_cert(name, rank, cate, result):
     temp = Sy0324()
-    for pos, s in ((temp.name_pos, name), (temp.cate_pos, cate), (temp.rank_pos, rank)):
+    for pos, s, alignment in ((temp.name_pos, name, "left"), (temp.cate_pos, cate, "left"), 
+                              (temp.rank_pos, rank, "center"), (temp.result_pos, result, "left")):
         draw = get_draw()
+        draw.text_alignment = alignment
         draw.text(*pos, s)
         draw(temp.image)
         del draw
@@ -26,4 +29,4 @@ def render_cert(name, rank, cate):
 
 
 if __name__ == "__main__":
-    render_cert(*sys.argv[1:4])
+    render_cert(*sys.argv[1:5])
