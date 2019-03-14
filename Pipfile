@@ -12,7 +12,6 @@ django-allauth = "==0.38.0"
 django-jsonview = "*"
 django-enumfield = "==1.5"
 wand = "*"
-cryptography = "*"
 qrcode = {extras = ["pil"],version = "*"}
 
 [requires]
