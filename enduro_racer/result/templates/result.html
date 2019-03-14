@@ -4,7 +4,7 @@
     {% load static %}
     {% get_static_prefix as STATIC_PREFIX %}
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1.0, user-scalable=yes">
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/race.css">
     <title>{{ page_title }}</title>
@@ -28,8 +28,8 @@
 <div class="col-12 col-lg-10 offset-lg-1 mt-2">
     {% for groupname, riders in result.items %}
     <h2 class="container">{{ groupname }}</h2>
-    <table class="table table-striped text-nowrap">
-        <thead class="table-head table-dark">
+    <table class="table table-hover table-striped table-responsive-sm text-nowrap">
+        <thead class="thead-dark">
         <tr>
             <th>排名<br>Rank</th>
             <th>号码<br>No</th>
@@ -52,7 +52,7 @@
             <th class="d-none d-lg-table-cell">{{ rider.start|default:"N/A" }}</th>
             <th class="d-none d-lg-table-cell">{{ rider.end|default:"N/A" }}</th>
             {% if rider.certfilename %}
-            <th><a href="{{ CERT_PREFIX }}/{{ rider.certfilename }}"> {{ rider.result }} </a></th>
+            <th><a href="{{ cert_prefix }}/{{ rider.certfilename }}"> {{ rider.result }} </a></th>
             {% else %}
             <th>{{ rider.result|default:"DNS" }}</th>
             {% endif %}
