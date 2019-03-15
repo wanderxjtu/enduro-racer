@@ -1,7 +1,7 @@
 [[source]]
 name = "pypi"
-url = "https://mirrors.aliyun.com/pypi/simple"
-verify_ssl = true
+url = "http://mirrors.aliyuncs.com/pypi/simple"
+verify_ssl = false
 
 [dev-packages]
 
@@ -12,6 +12,7 @@ django-jsonview = "*"
 django-enumfield = "==1.5"
 wand = "*"
 qrcode = {extras = ["pil"],version = "*"}
+uwsgi = "*"
 
 [requires]
 python_version = "3.6"

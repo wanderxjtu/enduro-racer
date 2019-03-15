@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b5034c75d37e8871a448d8304f0a167ad628fb0d88e359e5a3961f130f4027b4"
+            "sha256": "9ada4bf183ff6f273ffa98c33f4b7957c9101fa51440accb6ec0b21df619e14d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -10,8 +10,8 @@
         "sources": [
             {
                 "name": "pypi",
-                "url": "https://pypi.antfin-inc.com/simple",
-                "verify_ssl": true
+                "url": "http://mirrors.aliyuncs.com/pypi/simple",
+                "verify_ssl": false
             }
         ]
     },
@@ -168,6 +168,13 @@
                 "sha256:de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"
             ],
             "version": "==1.24.1"
+        },
+        "uwsgi": {
+            "hashes": [
+                "sha256:4972ac538800fb2d421027f49b4a1869b66048839507ccf0aa2fda792d99f583"
+            ],
+            "index": "pypi",
+            "version": "==2.0.18"
         },
         "wand": {
             "hashes": [
