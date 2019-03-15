@@ -4,6 +4,7 @@ from wand.image import Image
 
 class Sy0324():
     template_path = path.join(path.dirname(path.abspath(__file__)), 'image/sy0324.jpg')
+    comp_name = ""
     name_pos = (300, 440)
     cate_pos = (300, 512)
     rank_pos = (382, 588)

@@ -3,8 +3,6 @@ import qrcode
 import subprocess
 import base64
 
-from certy.signature.authentication import load_private_key, Signer
-from certy.signature.identifiers import Algorithm
 from certy.wandimage import WandImage
 
 
