@@ -17,7 +17,7 @@ class ResultView(TemplateView):
     def get_context_data(self, **kwargs):
         compname = self.kwargs['competition_uniname']
         return {"compname": RACE_NAME.get(compname, "比赛"),
-                "cert_prefix": "/cert/{}".format(compname),
+                "cert_prefix": "/certs/{}".format(compname),
                 "result": self._read_result(compname)}
 
     def _read_result(self, name):
