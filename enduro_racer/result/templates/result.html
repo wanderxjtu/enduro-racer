@@ -31,13 +31,12 @@
 <div class="col-12 col-lg-10 offset-lg-1 mt-2">
     {% for groupname, riders in result.items %}
     <h2 class="container">{{ groupname }}</h2>
-    <table class="table table-hover table-striped table-responsive-sm">
+    <table class="table table-hover table-striped">
         <thead class="thead-dark text-nowrap">
         <tr>
             <th>排名<br>Rank</th>
             <th>号码<br>No</th>
-            <th>姓名<br>Name</th>
-            <th>车队<br>Team</th>
+            <th>姓名 Name<br>车队 Team</th>
             <th class="d-none d-lg-table-cell">发车时间<br>StartAt</th>
             <th class="d-none d-lg-table-cell">到达时间<br>EndAt</th>
             <th>成绩<br>Result</th>
@@ -45,13 +44,12 @@
             <th class="d-none d-md-table-cell">积分<br>Points</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="text-nowrap align-middle">
         {% for rider in riders %}
         <tr>
-            <th>{{ rider.rank }}</th>
+            <th class="align-middle">{{ rider.rank }}</th>
             <th>{{ rider.no }}</th>
-            <th>{{ rider.name }}</th>
-            <th>{{ rider.team }}</th>
+            <th>{{ rider.name }}<br>{{ rider.team }}</th>
             <th class="d-none d-lg-table-cell">{{ rider.start|default:"N/A" }}</th>
             <th class="d-none d-lg-table-cell">{{ rider.end|default:"N/A" }}</th>
             {% if rider.certfilename %}
