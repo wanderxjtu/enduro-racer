@@ -44,21 +44,21 @@
             <th class="d-none d-md-table-cell">积分<br>Points</th>
         </tr>
         </thead>
-        <tbody class="text-nowrap align-middle">
+        <tbody class="text-nowrap">
         {% for rider in riders %}
         <tr>
-            <th class="align-middle">{{ rider.rank }}</th>
-            <th>{{ rider.no }}</th>
-            <th>{{ rider.name }}<br>{{ rider.team }}</th>
-            <th class="d-none d-lg-table-cell">{{ rider.start|default:"N/A" }}</th>
-            <th class="d-none d-lg-table-cell">{{ rider.end|default:"N/A" }}</th>
+            <td>{{ rider.rank }}</td>
+            <td>{{ rider.no }}</td>
+            <td><p>{{ rider.name }}</p><p class="text-secondary">{{ rider.team }}</p></td>
+            <td class="d-none d-lg-table-cell">{{ rider.start|default:"N/A" }}</td>
+            <td class="d-none d-lg-table-cell">{{ rider.end|default:"N/A" }}</td>
             {% if rider.certfilename %}
-            <th><a href="{{ cert_prefix }}/{{ rider.certfilename }}"> {{ rider.result }} </a></th>
+            <td><a href="{{ cert_prefix }}/{{ rider.certfilename }}"> {{ rider.result }} </a></td>
             {% else %}
-            <th>{{ rider.result|default:"DNS" }}</th>
+            <td>{{ rider.result|default:"DNS" }}</td>
             {% endif %}
-            <th class="d-none d-lg-table-cell">{{ rider.diff|default:"N/A" }}</th>
-            <th class="d-none d-md-table-cell">{{ rider.points|default:"N/A" }}</th>
+            <td class="d-none d-lg-table-cell">{{ rider.diff|default:"N/A" }}</td>
+            <td class="d-none d-md-table-cell">{{ rider.points|default:"N/A" }}</td>
         </tr>
         {% endfor %}
         </tbody>

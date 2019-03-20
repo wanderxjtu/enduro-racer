@@ -32,3 +32,11 @@ input.ng-invalid.ng-touched {
   height: 80px;
   width: 80px;
 }
+
+.table p {
+  margin-bottom:0 !important;
+}
+.table td {
+  vertical-align: middle !important;
+}
+
