@@ -6,10 +6,11 @@
     <div class="container" ng-if="comp !== null">
         <!--first to find racer info corresponding to currentUser, provide a NEW racer button to entering new
         racer basic info-->
-        <div class="container">
-            <h5 class="title">{{ comp.serialId__name }}<i ng-if="comp.serialId__name"
-                                                          class="fas fa-arrow-circle-right"></i>
-                {{ comp.name }} Sign Up Form</h5>
+        <div class="container text-center">
+            <h5 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
+                <i class="fas fa-bicycle"></i>
+                <span class="text-dark">{{ comp.name }}</span>
+            </h5>
         </div>
         <form name="competitionSignUp" class="form col-xs-12" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
@@ -34,7 +35,7 @@
                         <div class="col-sm-9 row">
                             <div class="col-sm-6">
                                 <input class="form-check-inline" type="radio" ng-model="racer.gender" value="1"
-                                       checked />
+                                       checked/>
                                 <label class="form-check-label">Male</label>
                             </div>
                             <div class="col-sm-6">

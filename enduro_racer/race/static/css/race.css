@@ -25,3 +25,18 @@
 input.ng-invalid.ng-touched {
   background-color: #FA787E;
 }
+
+.tux {
+  border:0;
+  background:url(/static/images/Tux.png) center / contain no-repeat;
+  height: 80px;
+  width: 80px;
+}
+
+.table p {
+  margin-bottom:0 !important;
+}
+.table td {
+  vertical-align: middle !important;
+}
+
