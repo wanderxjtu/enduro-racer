@@ -11,7 +11,7 @@ from race.utils import get_client_ip
 
 class VerifyForm(Form):
     message = CharField()
-    vaptch_token = CharField()
+    vaptcha_token = CharField()
 
     def vaptcha_validate(self, token, request):
         try:
