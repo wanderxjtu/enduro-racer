@@ -38,7 +38,7 @@ class VerifyResultView(FormView):
     form_class = VerifyForm
 
     def form_valid(self, form):
-        if not form.vaptcha_validate(form.vaptcha_token, self.request):
+        if not form.vaptcha_validate(form.cleaned_data['vaptcha_token'], self.request):
             return self.render_to_response({"result": "Unknown error."})
         if verify(settings.CERT_PUBKEY_PATH, form.cleaned_data['message']):
             return self.render_to_response({"result": "Verify Success!"})
