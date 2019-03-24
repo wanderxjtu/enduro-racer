@@ -1,3 +1,6 @@
+import logging
+import traceback
+
 from django.conf import settings
 from django.forms import Form, CharField
 
@@ -7,6 +10,8 @@ import requests
 
 from certy.qrsigner import verify
 from race.utils import get_client_ip
+
+LOGGER = logging.getLogger(__name__)
 
 
 class VerifyForm(Form):
@@ -24,8 +29,10 @@ class VerifyForm(Form):
             }
             req = requests.post("http://api.vaptcha.com/v2/validate", data=data)
             ret = req.json()
+            LOGGER.debug(ret)
             return ret["success"] == 1
         except Exception:
+            LOGGER.error(traceback.format_exc())
             return False
 
 
