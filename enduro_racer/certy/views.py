@@ -22,8 +22,8 @@ class VerifyForm(Form):
         try:
             data = {
                 "id": settings.VAPTCHA_ID,
-                "secret_key": settings.VAPTCHA_SECRET,
-                "scene": "03",
+                "secretkey": settings.VAPTCHA_SECRET,
+                "scene": "",
                 "token": token,
                 "ip": get_client_ip(request)
             }
