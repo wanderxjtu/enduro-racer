@@ -23,12 +23,12 @@
 </header>
 
 <div class="container">
-    <form class="col-10 col-offset-1" action="verify/" method="post">
+    <form class="container col-10" action="verify/" method="post">
         {% csrf_token %}
         <div class="form-group">
             <input class="form-control" name="message" required type="text" placeholder="在此粘帖要验证的证书字串">
         </div>
-        <div data-vid="5c94a2b4fc650ef6e082238e" style="width: 300px;height: 36px;">
+        <div class="form-group" data-vid="5c94a2b4fc650ef6e082238e" style="width: 300px;height: 36px;">
             <div class="vaptcha-init-main">
                 <div class="vaptcha-init-loading">
                     <img src="https://cdn.vaptcha.com/vaptcha-loading.gif"/>
