@@ -41,6 +41,20 @@
             <input class="form-control" type="submit" value="验证">
         </div>
     </form>
+    <div class="container col-10">
+        <div class="alert alert-success">
+            <h4 class="primary">技术细节</h4>
+            <p>证书信息经由openssl椭圆曲线算法以及sha256哈希算法签名，签名结果经base64算法序列化，与原信息拼装为二维码编码内容。
+                因此你也可以脱机验证。以下为在Linux上验证的方法。 </p>
+
+            <pre class="pre-scrollable"><code>echo -n <var>"$QRCODE_MSG"</var>|cut -d'|' -f2 | base64 -d > /tmp/signature.bin
+echo -n <var>"$QRCODE_MSG"</var>|cut -d'|' -f1 | "openssl dgst -sha256 -verify public_key.pem -signature /tmp/signature.bin</code>
+            </pre>
+
+            <p>以下是<strong>公钥</strong>，请保存为对应以上命令的<code>public_key.pem</code></p>
+            <pre class="border border-success rounded container"><code>{{ public_pem }}</code></pre>
+        </div>
+    </div>
 </div>
 
 

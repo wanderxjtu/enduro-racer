@@ -1,5 +1,6 @@
 import logging
 import traceback
+from pathlib import Path
 
 from django.conf import settings
 from django.forms import Form, CharField
@@ -38,6 +39,7 @@ class VerifyForm(Form):
 
 class VerifyView(TemplateView):
     template_name = "verify.html"
+    extra_context = {"public_pem": Path(settings.CERT_PUBKEY_PATH).read_text()}
 
 
 class VerifyResultView(FormView):
