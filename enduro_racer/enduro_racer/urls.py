@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+import certy.urls
 import race.urls
 import result.urls
 
@@ -23,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('race/', include(race.urls.urlpatterns)),
     path('result/', include(result.urls.urlpatterns)),
+    path('c/', include(certy.urls.urlpatterns)),
 ]

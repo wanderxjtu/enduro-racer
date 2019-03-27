@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1.0, user-scalable=yes">
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/race.css">
+    <title>成绩证书校验</title>
+</head>
+<body>
+<header class="header">
+    <div class="navbar navbar-dark bg-light">
+        <div class="col-12">
+            <h1 class="text-center">成绩证书校验</h1>
+        </div>
+    </div>
+    <div class="container-fluid mb-2 bg-secondary">
+        <div class=""></div>
+        <div class="tux ml-auto pr-3"></div>
+    </div>
+</header>
+
+<div class="container">
+    <form class="container col-10" action="verify/" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input class="form-control" name="message" required type="text" placeholder="在此粘帖要验证的证书字串">
+        </div>
+        <div class="form-group" data-vid="5c94a2b4fc650ef6e082238e" style="width: 300px;height: 36px;">
+            <div class="vaptcha-init-main">
+                <div class="vaptcha-init-loading">
+                    <img src="https://cdn.vaptcha.com/vaptcha-loading.gif"/>
+                    <span class="vaptcha-text">Vaptcha启动中...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="submit" value="验证">
+        </div>
+    </form>
+    <div class="container col-10">
+        <div class="alert alert-success">
+            <h4 class="primary">技术细节</h4>
+            <p>证书信息经由openssl椭圆曲线算法以及sha256哈希算法签名，签名结果经base64算法序列化，与原信息拼装为二维码编码内容。
+                因此你也可以脱机验证。以下为在Linux上验证的方法。 </p>
+
+            <pre class="pre-scrollable"><code>echo -n <var>"$QRCODE_MSG"</var>|cut -d'|' -f2 | base64 -d > /tmp/signature.bin
+echo -n <var>"$QRCODE_MSG"</var>|cut -d'|' -f1 | "openssl dgst -sha256 -verify public_key.pem -signature /tmp/signature.bin</code>
+            </pre>
+
+            <p>以下是<strong>公钥</strong>，请保存为对应以上命令的<code>public_key.pem</code></p>
+            <pre class="border border-success rounded container"><code>{{ public_pem }}</code></pre>
+        </div>
+    </div>
+</div>
+
+
+<footer class="mt-4">
+    <div class="hibp-footer col-12 pl-0 pr-0"></div>
+</footer>
+
+<script src="https://cdn.vaptcha.com/v2.js"></script>
+</body>

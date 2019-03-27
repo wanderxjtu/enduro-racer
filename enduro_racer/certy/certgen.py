@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(__file__) + "/..")
 
 from wand.drawing import Drawing
 
-from certy.template.sy0324 import Sy0324
+from certy.templates.sy0324 import Sy0324
 from certy.qrsigner import qrsign
 
 
