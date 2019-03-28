@@ -5,10 +5,8 @@
     {% get_static_prefix as STATIC_PREFIX %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/5.8.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/race.css">
     <title>{{ page_title }}</title>
 </head>
@@ -37,18 +35,11 @@
     <!--alt="HIBP banner">-->
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular.min.js"
-        integrity="sha256-G+QuLmrpPCq07dbFF1iKLjl3nL6Mvv1qVoMzLVyHpp0=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-route.min.js"
-        integrity="sha256-l5Hd3fjavvxOOSwZeVCkbMT4KAeMEfLwQnSzjudC/4s=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-cookies.min.js"
-        integrity="sha256-aEYm74tjwVDZYhSx9lpGzHspabSCNRDN4YrT2RMOt1c=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"
-        integrity="sha256-6vbKDGwy9JmzGKxxeypGzCjyOmACDtgheaOQT6ZVafA=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.17/angular-filter.min.js"
-        integrity="sha256-CCbnZJ4lPY1crod3VTMaag/SdyHrW7lYW7PI9MPzBMY=" crossorigin="anonymous"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.7/angular-message-format.min.js"-->
-<!--integrity="sha256-+DmvNAsf4IwlYCYpzbej0EkVevFKoJhqhIKKwKV4gVE=" crossorigin="anonymous"></script>-->
+<script src="https://cdn.bootcss.com/angular.js/1.7.8/angular.min.js"></script>
+<script src="https://cdn.bootcss.com/angular.js/1.7.8/angular-route.min.js"></script>
+<script src="https://cdn.bootcss.com/angular.js/1.7.8/angular-cookies.min.js"></script>
+<script src="https://cdn.bootcss.com/angular-filter/0.5.17/angular-filter.min.js"></script>
+<script src="https://cdn.bootcss.com/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
 <script src="{{ STATIC_PREFIX }}js/enduro-racer.js"></script>
 <script src="{{ STATIC_PREFIX }}js/alpha-3.min.js"></script>
 <script type="text/javascript" charset="utf-8">
@@ -59,10 +50,6 @@
     var IS_ADMIN = true;
     var NEED_ADMIN = false;
     var SECURE_COOKIE = true;
-
-
-
-
 
 </script>
 </body>
