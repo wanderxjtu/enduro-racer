@@ -18,32 +18,26 @@ angular
     function($routeProvider) {
       $routeProvider.when("/", {
         templateUrl: STATIC + "partial/competitions.html",
-        controller: "IndexCtrl"
       });
 
       $routeProvider.when("/competition/:comp", {
         templateUrl: STATIC + "partial/competition.html",
-        controller: "CompetitionCtrl"
       });
 
       $routeProvider.when("/competition/:comp/groups", {
         templateUrl: STATIC + "partial/groups.html",
-        controller: "GroupsCtrl"
       });
 
       $routeProvider.when("/competition/:comp/signup", {
         templateUrl: STATIC + "partial/signup.html",
-        controller: "CompetitionSignupCtrl"
       });
 
       $routeProvider.when("/new_admin", {
         templateUrl: STATIC + "partial/new_admin.html",
-        controller: "NewAdminCtrl"
       });
 
       $routeProvider.when("/account", {
         templateUrl: STATIC + "partial/account.html",
-        controller: "AccountCtrl"
       });
 
       $routeProvider.otherwise({
