@@ -26,7 +26,6 @@ def render_cert(temp_name, *contents):
     temp = temp_conf.template
     image = temp.get_image()
     for content, style in zip(contents + temp_conf.extra_contents, temp.content_styles):
-        print(content)
         draw = get_draw()
         draw.font_size = style.font_size
         draw.fill_color = Color(style.font_color)
@@ -36,13 +35,15 @@ def render_cert(temp_name, *contents):
         del draw
 
     msg = "".join(contents) + temp_conf.name
-    print(msg)
-    qrimage = qrsign(settings.CERT_KEY_PATH, msg)
+    qrimage = qrsign(settings.CERT_KEY_PATH, msg,
+                     fill_color=temp.qr_style.fill_color, back_color=temp.qr_style.back_color)
     qrimage.resize(*temp.qr_style.size)
 
     image.composite(qrimage, *temp.qr_style.position)
 
-    image.save(filename=os.path.join(settings.CERT_SAVE_PATH, "-".join(contents[1::-1]) + temp.file_suffix))
+    filename = "-".join(contents[1::-1]) + temp.file_suffix
+
+    image.save(filename=os.path.join(settings.CERT_SAVE_PATH, temp_name, filename.replace("/", "-")))
 
 
 if __name__ == "__main__":
