@@ -3,7 +3,7 @@ from pathlib import PurePath
 from collections import namedtuple
 from wand.image import Image
 
-ContentStyle = namedtuple("ContentStyle", ("font_size", "font_color", "position", "text_align"))
+ContentStyle = namedtuple("ContentStyle", ("font_size", "font_color", "position", "text_align", "formatter"))
 QrStyle = namedtuple("QrStyle", ("size", "position", "fill_color", "back_color"))
 
 
@@ -21,17 +21,17 @@ class CertiTemplate(object):
 
 
 temp_sy2019s1 = CertiTemplate(path.join(path.dirname(path.abspath(__file__)), 'templates/image/sy2019.jpg'),
-                              ContentStyle(30, "#ffffff", (300, 440), "left"),
-                              ContentStyle(30, "#ffffff", (382, 588), "center"),
-                              ContentStyle(30, "#ffffff", (300, 512), "left"),
-                              ContentStyle(30, "#ffffff", (450, 588), "left"),
+                              ContentStyle(30, "#ffffff", (300, 440), "left", None),
+                              ContentStyle(30, "#ffffff", (382, 588), "center", None),
+                              ContentStyle(30, "#ffffff", (300, 512), "left", None),
+                              ContentStyle(30, "#ffffff", (450, 588), "left", None),
                               qr_style=QrStyle((100, 100), (80, 80), "#000000", "#ffffff"),
                               )
 temp_hibp_pink = CertiTemplate(path.join(path.dirname(path.abspath(__file__)), 'templates/image/hibp-pink.png'),
-                               ContentStyle(50, "#f029a9", (770, 725), "right"),  # name
-                               ContentStyle(65, "#f029a9", (380, 828), "center"),  # rank
-                               ContentStyle(50, "#f029a9", (770, 630), "right"),  # cate
-                               ContentStyle(50, "#f029a9", (770, 828), "right"),  # result
-                               ContentStyle(50, "#f029a9", (770, 925), "right"),  # Date
+                               ContentStyle(50, "#f029a9", (770, 725), "right", None),  # name
+                               ContentStyle(50, "#f029a9", (380, 828), "center", "第 {} 名".format),  # rank
+                               ContentStyle(50, "#f029a9", (770, 630), "right", None),  # cate
+                               ContentStyle(50, "#f029a9", (770, 828), "right", None),  # result
+                               ContentStyle(50, "#f029a9", (770, 925), "right", None),  # Date
                                qr_style=QrStyle((100, 100), (40, 40), "#f029a9", "#000"),
                                )

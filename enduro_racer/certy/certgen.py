@@ -30,6 +30,8 @@ def render_cert(temp_name, *contents):
         draw.font_size = style.font_size
         draw.fill_color = Color(style.font_color)
         draw.text_alignment = style.text_align
+        if style.formatter:
+            content = style.formatter(content)
         draw.text(*style.position, content)
         draw(image)
         del draw
