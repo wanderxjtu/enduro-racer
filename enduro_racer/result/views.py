@@ -7,7 +7,9 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 RACE_NAME = {
-    "sy0324": "2019中国绍兴上虞祝家庄国际单车速降赛"
+    "sy2019s1": "2019绍兴·上虞丰惠祝家庄国际单车山地速降邀请赛",
+    "nh2019s1": "2019宁海Enduro春季赛",
+    "cat2019s1": "2019西湖小野猫Enduro赛",
 }
 
 

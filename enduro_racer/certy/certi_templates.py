@@ -33,5 +33,5 @@ temp_hibp_pink = CertiTemplate(path.join(path.dirname(path.abspath(__file__)), '
                                ContentStyle(50, "#f029a9", (770, 630), "right", None),  # cate
                                ContentStyle(50, "#f029a9", (770, 828), "right", None),  # result
                                ContentStyle(50, "#f029a9", (770, 925), "right", None),  # Date
-                               qr_style=QrStyle((100, 100), (40, 40), "#000", "#555555"),
+                               qr_style=QrStyle((100, 100), (40, 40), "#000", "#5d687d"),
                                )
