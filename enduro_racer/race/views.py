@@ -16,23 +16,22 @@
    Author : jiaqi.hjq
 """
 import logging
-
-from race.models.racer import RacerLog, Team
-from race.utils import get_model_all_fields_names
-
-LOGGER = logging.getLogger(__file__)
+import traceback
 from datetime import datetime
 
-from django.db.models import QuerySet, Model
-from django.http import JsonResponse
+LOGGER = logging.getLogger(__file__)
+import json
+
+from django.views.generic.edit import ProcessFormView
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-# Create your views here.
 from django.views.generic import TemplateView
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 
 from .models.competition import Competition
+from .models.racer import RacerLog, Team, RacerInfo
 
 
 class IndexView(TemplateView):
@@ -87,8 +86,76 @@ class CompetitionDetailView(JsonViewMixin, BaseDetailView):
         return get_object_or_404(qs, uniname=self.kwargs['competition_uniname'])
 
 
-class CompetitionSignupView(JsonViewMixin, BaseDetailView):
-    pass
+class CompetitionSignupView(JsonViewMixin, ProcessFormView):
+    success_url = "signup_success.html"
+
+    def post(self, request, *args, **kwargs):
+        obj = json.loads(request.body.decode('utf-8'))
+        try:
+            self.validate(obj)
+            self.save_object(obj)
+            obj = {"success": True}
+        except Exception as e:
+            LOGGER.error(traceback.format_exc())
+            obj = {"success": False, "message": str(e)}
+        return self.render_to_response({"object": obj})
+
+    def save_object(self, obj):
+        qs = RacerInfo.objects.all()
+        try:
+            print(obj)
+            # allow update some info
+            racer = qs.get(idNumber=obj["idNumber"])
+            print(racer)
+            racer.realName = obj["realName"]
+            racer.region = obj["region"]
+            racer.phoneNumber = obj["phoneNumber"]
+            racer.parentName = obj.get("parentName", "")
+            racer.parentNumber = obj.get("parentNumber", "")
+        except RacerInfo.DoesNotExist:
+            # idtype is not posted here. check region instead.
+            idtype = 0 if obj["region"] == "CHN" else 1
+            racer = RacerInfo(realName=obj["realName"], gender=obj["gender"], birthday=obj["birthday"],
+                              region=obj["region"], idType=idtype, idNumber=obj["idNumber"],
+                              phoneNumber=obj["phoneNumber"])
+        racer.save()
+
+        comp = Competition.objects.all().get(uniname=self.kwargs["competition_uniname"])
+
+        qs = Team.objects.all()
+        if obj["teamId"] == "NEW":
+            try:
+                team = qs.get(name=obj["teamName"])
+            except Team.DoesNotExist:
+                team = Team(name=obj["teamName"], leaderName=obj["teamLeader"], leaderPhone=obj["teamLeaderPhone"])
+        else:
+            team = qs.get(id=obj["teamId"])
+        team.save()
+
+        if RacerLog.objects.all().filter(racerId=racer, competitionId=comp).exists():
+            return
+        racerlog = RacerLog(racerId=racer, competitionId=comp, teamId=team, group=obj["group"])
+        racerlog.save()
+
+    def validate(self, obj):
+        for k, v in obj.items():
+            obj[k] = str(v).strip()
+
+        obj["birthday"] = datetime.strptime(obj["birthday"].split("T")[0], "%Y-%m-%d")
+        today = datetime.today()
+        if today.replace(year=today.year - 18) < obj["birthday"]:
+            if not all((obj.get("parentName"), self._is_phone_number(obj.get("parentNumber")))):
+                return False, "未成年人请填写家长信息"
+        return True, ""
+
+    def _is_phone_number(self, number: str):
+        try:
+            return number.isdigit() and len(number) >= 11
+        except:
+            return False
+
+    def get_success_url(self, context):
+        return self.request.path + "success/"
 
 
 class TeamListView(JsonListViewMixin, BaseListView):
@@ -96,3 +163,7 @@ class TeamListView(JsonListViewMixin, BaseListView):
 
     def get_queryset(self):
         return Team.objects.all().values('id', 'name', 'leaderName')
+
+
+class CompetitionSignupSuccessView(TemplateView):
+    template_name = "signup_success.html"

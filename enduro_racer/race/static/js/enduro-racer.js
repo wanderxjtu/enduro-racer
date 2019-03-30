@@ -10,7 +10,6 @@ angular
     "ui.bootstrap",
     "ngRoute",
     "ngCookies",
-//    "ngMessageFormat",
     "angular.filter"
   ])
   .config([
@@ -70,6 +69,13 @@ angular
           };
         }
       ]);
+    }
+  ])
+  .config([
+    "$httpProvider",
+    function($httpProvider) {
+      $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+      $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }
   ])
   .directive("ngSetFocus", [
@@ -243,7 +249,6 @@ angular
       $http
         .get($scope.API + "competition/" + $scope.comp_uniname)
         .then(function(response) {
-          console.log(response.data)
           $scope.comp = response.data.object;
         },function(error) {
           console.error("Fetching competition failed");
@@ -253,6 +258,7 @@ angular
         console.log(comp)
         $location.path("/competition/" + comp + "/groups/");
       };
+
     }
   ])
   .controller("CompetitionSignupCtrl", [
@@ -285,9 +291,15 @@ angular
         $location.path("/competition/" + comp + "/groups/");
       };
 
-      $scope.signUp= function(racer) {
+      $scope.signUp = function(racer) {
         console.log(racer);
-//        $location.path("/competition/" + comp + "/groups/");
+        $http.post($scope.API + "competition/" + $scope.comp_uniname + "/signup/", racer)
+        .then(function(response) {
+          $scope.signup_result = response.data.object;
+        },function(error) {
+          $scope.signup_result = {"success": false, "message": "提交失败，请再试一次"}
+          console.error("Signup Error");
+        });
       };
     }
   ])

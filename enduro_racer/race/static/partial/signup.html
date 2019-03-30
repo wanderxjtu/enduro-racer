@@ -7,18 +7,23 @@
         <!--first to find racer info corresponding to currentUser, provide a NEW racer button to entering new
         racer basic info-->
         <div class="container text-center">
-            <h5 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
+            <h3 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
                 <i class="fas fa-bicycle"></i>
                 <span class="text-dark">{{ comp.name }}</span>
-            </h5>
+            </h3>
         </div>
-        <form name="competitionSignUp" class="form col-xs-12" novalidate>
+        <div class="container text-center" ng-if="signup_result.success">
+            <div class="alert alert-success">
+                <h3>您已报名成功 {{ comp.name }} ，请及时缴纳参赛费用 {{ comp.signUpFee }}。个人信息如有误请联系赛事管理员 {{ comp.manager }}</h3>
+            </div>
+        </div>
+        <div class="container text-center" ng-if="signup_result.success == false">
+            <div class="alert alert-danger">
+                <h3>报名失败：{{ signup_result.message }} </h3>
+            </div>
+        </div>
+        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-hide="signup_result.success" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
-                <!--Racer choices-->
-                <div class="form-group row">
-                    <input class="form-check-inline" type="checkbox" ng-model="racer.new" name="newRacer" required/>
-                    <label class="form-check-label">New Racer</label>
-                </div>
                 <!--Racer Info-->
                 <div class="form-group col-xs-12">
                     <!--Name-->
