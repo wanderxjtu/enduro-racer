@@ -39,6 +39,7 @@ class Competition(models.Model):
     uniname = models.CharField(max_length=64, unique=True)  # designed for url path, generated automatically
     description = models.TextField(max_length=65535)
     groupSetting = models.CharField(max_length=255)  # csv format
+    manager = models.CharField(max_length=255)
     serialId = models.ForeignKey(Serials, on_delete=models.DO_NOTHING)
     startDate = models.DateField()
     endDate = models.DateField()
@@ -48,6 +49,7 @@ class Competition(models.Model):
     signUpStartDate = models.DateTimeField()
     signUpEndDate = models.DateTimeField()
     signUpFee = models.IntegerField()
+    maxRacerCount = models.IntegerField()
     CompetitionStatus = models.SmallIntegerField(choices=[(s.value, s) for s in CompStatus],
                                                  default=CompStatus.Pending.value)  # see CompStatus
 
