@@ -1,19 +1,19 @@
 <div ng-controller="CompetitionCtrl" class="container">
-    <div ng-show="comp === null" class="text-center container">
-        <i class="fa fa-spinner fa-spin fa-4x"></i>
-    </div>
-
-    <div class="container row" ng-if="comp !== null">
-        <div class="col-xs-12 col-md-8 offset-md-2 container">
+    <div ng-include="PARTIAL + 'competition_header.html'"></div>
+    <div class="container" ng-if="comp !== null">
+        <div class="col-12 col-md-8 offset-md-2 container">
             <div class="col-12">
-                <h3>{{ comp.name }}</h3>
-                <p>{{ comp.serialId__name }}</p>
                 <p>{{ comp.description }}</p>
                 <p><i class="fas fa-layer-group"></i> {{ comp.groups }}</p>
                 <p><i class="fas fa-map-marker"></i> {{ comp.location }}</p>
                 <p>
                     <i class="fas fa-calendar-day"></i> {{ comp.startDate | date:'yyyy-MM-dd' }}
                     <i class="fas fa-arrow-circle-right"></i> {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
+            </div>
+            <div class="col-12 container text-center">
+                <a href="" class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp_uniname)">Sign
+                    Up</a>
+                <a href="" class="btn" ng-click="showCompetitionGroup(comp_uniname)">View Grouping</a>
             </div>
         </div>
     </div>

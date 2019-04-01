@@ -1,28 +1,29 @@
-<div ng-controller="CompetitionSignupCtrl" class="container">
-    <div ng-show="comp === null" class="text-center container">
-        <i class="fa fa-spinner fa-spin fa-4x"></i>
-    </div>
-
-    <div class="container" ng-if="comp !== null">
+<div ng-controller="CompetitionCtrl" class="container">
+    <div ng-include="PARTIAL + 'competition_header.html'"></div>
+    <div class="container" ng-controller="CompetitionSignupCtrl" ng-if="comp !== null">
         <!--first to find racer info corresponding to currentUser, provide a NEW racer button to entering new
         racer basic info-->
-        <div class="container text-center">
-            <h3 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
-                <i class="fas fa-bicycle"></i>
-                <span class="text-dark">{{ comp.name }}</span>
-            </h3>
-        </div>
-        <div class="container text-center" ng-if="signup_result.success">
+        <div class="container" ng-if="signup_result.success">
             <div class="alert alert-success">
-                <h3>您已报名成功 {{ comp.name }} ，请及时缴纳参赛费用 {{ comp.signUpFee }}。个人信息如有误请联系赛事管理员 {{ comp.manager }}</h3>
+                <p>您已报名成功 {{ comp.name }} ，请及时缴纳参赛费用 {{ comp.signUpFee }}。个人信息如有误请联系赛事管理员 {{ comp.manager }}</p>
+                <p>You have signed up {{ comp.name }}，please pay your entry fees {{ comp.signUpFee }}.
+                    Contact {{ comp.manager }} if you have submitted wrong personal info.</p>
             </div>
         </div>
-        <div class="container text-center" ng-if="signup_result.success == false">
+        <div class="container" ng-if="signup_result.success == false">
             <div class="alert alert-danger">
-                <h3>报名失败：{{ signup_result.message }} </h3>
+                <p>报名失败：{{ signup_result.message }} </p>
+                <p>Sign up failed: {{ signup_result.message }} </p>
             </div>
         </div>
-        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-hide="signup_result.success" novalidate>
+        <div class="container" ng-if="comp.signUpOpen != true">
+            <div class="alert alert-danger">
+                <p>报名已关闭，请联系赛事管理员{{ comp.manager }}。</p>
+                <p>Signing up closed, please contact Competiton Manager {{ comp.manager }}.</p>
+            </div>
+            <button class="btn btn-primary" ng-click="showCompetitionDetail(comp_uniname)">View Competition</button>
+        </div>
+        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-if="comp.signUpOpen == true" ng-hide="signup_result.success" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
                 <!--Racer Info-->
                 <div class="form-group col-xs-12">
@@ -148,7 +149,7 @@
                 <!--Submit -->
                 <div class="container text-center">
                     <button class="btn btn-primary" type="submit" ng-click="signUp(racer)">Sign Up</button>
-                    <button class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</button>
+                    <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">View Detail</button>
                 </div>
             </div>
         </form>

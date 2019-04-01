@@ -244,7 +244,8 @@ angular
     "$http",
     "$route",
     "$cookies",
-    function($scope, $http, $route, $cookies) {
+    "$location",
+    function($scope, $http, $route, $cookies, $location) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
 
@@ -261,10 +262,14 @@ angular
         });
 
       $scope.showCompetitionGroup = function(comp) {
-        console.log(comp)
         $location.path("/competition/" + comp + "/groups/");
       };
-
+      $scope.showCompetitionSignup = function(comp) {
+        $location.path("/competition/" + comp + "/signup/");
+      };
+      $scope.showCompetitionDetail = function(comp) {
+        $location.path("/competition/" + comp);
+      };
     }
   ])
   .controller("CompetitionSignupCtrl", [
@@ -273,8 +278,8 @@ angular
     "$route",
     "$cookies",
     "$window",
-    "$q",
-    function($scope, $http, $route, $cookies, $window, $q) {
+    "$location",
+    function($scope, $http, $route, $cookies, $window, $location) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp;
       $scope.allregions = $window.alpha3regions;
@@ -286,19 +291,14 @@ angular
 
       // need User -> RacerInfo
       // need teamList
-      $q.all([
-        $http.get($scope.API + "teams/"),
-        $http.get($scope.API + "competition/" + $scope.comp_uniname)
-        ]).then(function(response) {
+      $http.get($scope.API + "teams/")
+      .then(function(response) {
           $scope.teams = response[0].data.teams;
-          $scope.comp = response[1].data.object;
-      });
-      $scope.showCompetitionGroup = function(comp) {
-        $location.path("/competition/" + comp + "/groups/");
-      };
+      },function(error) {
+          console.error("Fetching competition failed");
+      });;
 
       $scope.signUp = function(racer) {
-        console.log(racer);
         $http.post($scope.API + "competition/" + $scope.comp_uniname + "/signup/", racer)
         .then(function(response) {
           $scope.signup_result = response.data.object;

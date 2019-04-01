@@ -1,9 +1,6 @@
-<div ng-controller="GroupsCtrl" class="container">
-    <div ng-show="groups === null" class="text-center container">
-        <i class="fa fa-spinner fa-spin fa-4x"></i>
-    </div>
-
-    <div class="container mt-2" ng-if="groups !== null">
+<div ng-controller="CompetitionCtrl" class="container">
+    <div ng-include="PARTIAL + 'competition_header.html'"></div>
+    <div class="container mt-2" ng-controller="GroupsCtrl" ng-if="groups !== null">
         <div class="col-xs-12 col-md-8 offset-md-2 container"
              ng-repeat="(groupname, racers) in groups | groupBy: 'group'">
             <h5 class="card-title text-center">{{ groupname }} Group: {{ racers.length }}
@@ -27,6 +24,10 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="col-12 container text-center">
+            <button class="btn btn-primary" type="submit" ng-click="signUp(racer)" ng-disabled="comp.signUpOpen">Sign Up</button>
+            <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">View Detail</button>
         </div>
     </div>
 </div>
