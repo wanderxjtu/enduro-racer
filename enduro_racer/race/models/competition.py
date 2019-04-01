@@ -36,7 +36,7 @@ class Serials(models.Model):
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
-    uniname = models.CharField(max_length=1024, unique=True)  # designed for url path, generated automatically
+    uniname = models.CharField(max_length=64, unique=True)  # designed for url path, generated automatically
     description = models.TextField(max_length=65535)
     groupSetting = models.CharField(max_length=255)  # csv format
     serialId = models.ForeignKey(Serials, on_delete=models.DO_NOTHING)
