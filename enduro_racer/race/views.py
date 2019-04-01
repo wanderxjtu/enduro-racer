@@ -82,7 +82,7 @@ class CompetitionDetailView(JsonViewMixin, BaseDetailView):
                                                                          'description', 'groupSetting',
                                                                          'startDate', 'endDate', 'signUpOpen',
                                                                          'uniname', 'signUpFee', 'signUpStartDate',
-                                                                         'signUpEndDate')
+                                                                         'signUpEndDate', 'manager')
         return get_object_or_404(qs, uniname=self.kwargs['competition_uniname'])
 
 
@@ -92,9 +92,10 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
     def post(self, request, *args, **kwargs):
         obj = json.loads(request.body.decode('utf-8'))
         try:
-            self.validate(obj)
-            self.save_object(obj)
-            obj = {"success": True}
+            succ, msg = self.validate(obj)
+            if succ:
+                self.save_object(obj)
+            obj = {"success": succ, "message": msg}
         except Exception as e:
             LOGGER.error(traceback.format_exc())
             obj = {"success": False, "message": str(e)}
@@ -103,24 +104,19 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
     def save_object(self, obj):
         qs = RacerInfo.objects.all()
         try:
-            print(obj)
+            idtype = 0 if obj["region"] == "CHN" else 1
+            racer = qs.get(idType=idtype, idNumber=obj["idNumber"], realName=obj["realName"])
             # allow update some info
-            racer = qs.get(idNumber=obj["idNumber"])
-            print(racer)
-            racer.realName = obj["realName"]
             racer.region = obj["region"]
             racer.phoneNumber = obj["phoneNumber"]
             racer.parentName = obj.get("parentName", "")
             racer.parentNumber = obj.get("parentNumber", "")
         except RacerInfo.DoesNotExist:
             # idtype is not posted here. check region instead.
-            idtype = 0 if obj["region"] == "CHN" else 1
             racer = RacerInfo(realName=obj["realName"], gender=obj["gender"], birthday=obj["birthday"],
                               region=obj["region"], idType=idtype, idNumber=obj["idNumber"],
                               phoneNumber=obj["phoneNumber"])
         racer.save()
-
-        comp = Competition.objects.all().get(uniname=self.kwargs["competition_uniname"])
 
         qs = Team.objects.all()
         if obj["teamId"] == "NEW":
@@ -132,6 +128,7 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
             team = qs.get(id=obj["teamId"])
         team.save()
 
+        comp = self.get_comp(uniname=self.kwargs['competition_uniname'])
         if RacerLog.objects.all().filter(racerId=racer, competitionId=comp).exists():
             return
         racerlog = RacerLog(racerId=racer, competitionId=comp, teamId=team, group=obj["group"])
@@ -141,15 +138,35 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
         for k, v in obj.items():
             obj[k] = str(v).strip()
 
+        if not self._is_phone_number(obj["phoneNumber"]):
+            return False, "请填写正确的号码"
+
         obj["birthday"] = datetime.strptime(obj["birthday"].split("T")[0], "%Y-%m-%d")
         today = datetime.today()
-        if today.replace(year=today.year - 18) < obj["birthday"]:
-            if not all((obj.get("parentName"), self._is_phone_number(obj.get("parentNumber")))):
-                return False, "未成年人请填写家长信息"
+
+        # check if under age
+        # if today.replace(year=today.year - 18) < obj["birthday"]:
+        #     if not all((obj.get("parentName"), self._is_phone_number(obj.get("parentNumber")))):
+        #         return False, "未成年人请填写家长信息"
+
+        # check_racer_number
+        comp = self.get_comp(uniname=self.kwargs['competition_uniname'])
+        if not comp.signUpOpen:
+            return False, "报名已关闭，请联系管理员！{}".format(comp.manager)
+        if RacerLog.objects.filter(
+                competitionId__uniname=self.kwargs['competition_uniname']).count() >= comp.maxRacerCount:
+            return False, "报名人数已到上限，请联系管理员！{}".format(comp.manager)
+
         return True, ""
+
+    def get_comp(self, **kwargs):
+        return Competition.objects.all().get(**kwargs)
 
     def _is_phone_number(self, number: str):
         try:
+            number = number.replace('-', '')
+            if number.startswith('+'):
+                number = number[1:]
             return number.isdigit() and len(number) >= 11
         except:
             return False

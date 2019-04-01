@@ -26,7 +26,9 @@
             </table>
         </div>
         <div class="col-12 container text-center">
-            <button class="btn btn-primary" type="submit" ng-click="signUp(racer)" ng-disabled="comp.signUpOpen">Sign Up</button>
+            <button class="btn btn-primary" type="submit" ng-click="showCompetitionSignup(comp_uniname)"
+                    ng-disabled="comp.signUpOpen != true">Sign Up
+            </button>
             <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">View Detail</button>
         </div>
     </div>
