@@ -293,7 +293,7 @@ angular
       // need teamList
       $http.get($scope.API + "teams/")
       .then(function(response) {
-          $scope.teams = response[0].data.teams;
+          $scope.teams = response.data.teams;
       },function(error) {
           console.error("Fetching competition failed");
       });;
