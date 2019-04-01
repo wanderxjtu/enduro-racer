@@ -78,6 +78,12 @@ angular
       $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }
   ])
+  .config([
+    "$locationProvider",
+    function($locationProvider) {
+      $locationProvider.hashPrefix('');
+    }
+  ])
   .directive("ngSetFocus", [
     "$timeout",
     function($timeout) {
