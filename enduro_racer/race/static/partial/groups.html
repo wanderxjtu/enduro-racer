@@ -12,6 +12,7 @@
                     <th scope="col">#</th>
                     <th scope="col">NAME</th>
                     <th scope="col">GENDER</th>
+                    <th scope="col">REGION</th>
                     <th scope="col">TEAM</th>
                 </tr>
                 </thead>
@@ -20,6 +21,7 @@
                     <td scope="row">{{ racer.racerTag}}</td>
                     <td>{{ racer.racerId__realName}}</td>
                     <td>{{ racer.racerId__gender | genderFromInt }}</td>
+                    <td>{{ allregions[racer.racerId__region] }}</td>
                     <td>{{ racer.teamId__name}}</td>
                 </tr>
                 </tbody>

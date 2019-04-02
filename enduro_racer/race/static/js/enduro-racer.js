@@ -314,9 +314,11 @@ angular
     "$http",
     "$route",
     "$cookies",
-    function($scope, $http, $route, $cookies) {
+    "$window",
+    function($scope, $http, $route, $cookies, $window) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
+      $scope.allregions = $window.alpha3regions;
 
       if (NEED_ADMIN) {
         $location.path("/new_admin");

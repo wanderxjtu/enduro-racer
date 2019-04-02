@@ -68,9 +68,10 @@ class CompetitionGroupListView(JsonListViewMixin, BaseListView):
     def get_queryset(self):
         # obj = get_object_or_404(Competition, uniname=self.kwargs['competition_uniname'])
         return RacerLog.objects.select_related('competitionId__uniname', 'racerId__realName', 'racerId__gender',
-                                               'teamId__name').filter(
+                                               'racerId__region', 'teamId__name').filter(
             competitionId__uniname=self.kwargs['competition_uniname']).values('group', 'racerTag', 'racerId__realName',
-                                                                              'racerId__gender', 'teamId__name')
+                                                                              'racerId__gender', 'racerId__region',
+                                                                              'teamId__name')
 
 
 class CompetitionDetailView(JsonViewMixin, BaseDetailView):
