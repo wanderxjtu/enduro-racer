@@ -1,10 +1,8 @@
 from collections import defaultdict
-from functools import partial
-
-from django.shortcuts import render
-
 # Create your views here.
 from django.views.generic import TemplateView
+
+from race.models.competition import Competition
 
 RACE_NAME = {
     "sy2019s1": "2019绍兴·上虞丰惠祝家庄国际单车山地速降邀请赛",
@@ -18,7 +16,12 @@ class ResultView(TemplateView):
 
     def get_context_data(self, **kwargs):
         compname = self.kwargs['competition_uniname']
-        return {"compname": RACE_NAME.get(compname, "比赛"),
+        try:
+            comp_full_name = Competition.objects.values_list("name", flat=True).get(uniname=compname)
+        except Exception as e:
+            comp_full_name = RACE_NAME.get(compname, "比赛")
+
+        return {"comp_full_name": comp_full_name,
                 "cert_prefix": "/certs/{}".format(compname),
                 "result": self._read_result(compname)}
 
