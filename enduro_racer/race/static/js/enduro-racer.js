@@ -117,9 +117,9 @@ angular
   .filter("genderFromInt", function() {
     return function(input) {
       if (input == 0) {
-        return "Female";
+        return "female";
       }
-      return "Male";
+      return "male";
     };
   })
   .filter("startFrom", function() {
@@ -318,7 +318,7 @@ angular
     function($scope, $http, $route, $cookies, $window) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
-      $scope.allregions = $window.alpha3regions;
+      $scope.regionsemoji = $window.alpha3emoji;
 
       if (NEED_ADMIN) {
         $location.path("/new_admin");

@@ -1,28 +1,24 @@
 <div ng-controller="CompetitionCtrl" class="container">
     <div ng-include="PARTIAL + 'competition_header.html'"></div>
-    <div class="container mt-2" ng-controller="GroupsCtrl" ng-if="groups !== null">
-        <div class="col-xs-12 col-md-8 offset-md-2 container"
+    <div class="mt-2" ng-controller="GroupsCtrl" ng-if="groups !== null">
+        <div class="col-md-8 offset-md-2"
              ng-repeat="(groupname, racers) in groups | groupBy: 'group'">
-            <h5 class="card-title text-center">{{ groupname }} Group: {{ racers.length }}
+            <h5 class="container">{{ groupname }} Group: {{ racers.length }}
                 <ng-pluralize count="racers.length" when="{'one': 'Racer', 'other':'Racers'}"></ng-pluralize>
             </h5>
             <table class="table">
-                <thead>
+                <thead class="text-nowrap">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">GENDER</th>
-                    <th scope="col">REGION</th>
-                    <th scope="col">TEAM</th>
+                    <th>号码<br>No</th>
+                    <th>姓名 Name<br>车队 Team</th>
                 </tr>
                 </thead>
-                <tbody ng-repeat="racer in racers | orderBy: 'racerTag'">
+                <tbody class="text-nowrap" ng-repeat="racer in racers | orderBy: 'racerTag'">
                 <tr scope="row">
-                    <td scope="row">{{ racer.racerTag}}</td>
-                    <td>{{ racer.racerId__realName}}</td>
-                    <td>{{ racer.racerId__gender | genderFromInt }}</td>
-                    <td>{{ allregions[racer.racerId__region] }}</td>
-                    <td>{{ racer.teamId__name}}</td>
+                    <td scope="row">{{ racer.racerTag }}</td>
+                    <td><p>{{ regionsemoji[racer.racerId__region] }}{{ racer.racerId__realName }}
+                        <i class="fa fa-{{ racer.racerId__gender | genderFromInt }}" aria-hidden="true"></i></p>
+                        <p class="text-secondary">{{ racer.teamId__name }}</p></td>
                 </tr>
                 </tbody>
             </table>
