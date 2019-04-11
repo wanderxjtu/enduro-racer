@@ -52,6 +52,7 @@ class Competition(models.Model):
     maxRacerCount = models.IntegerField()
     CompetitionStatus = models.SmallIntegerField(choices=[(s.value, s) for s in CompStatus],
                                                  default=CompStatus.Pending.value)  # see CompStatus
+    resultConfig = models.TextField(max_length=65535)
 
     def __str__(self):
         return self.uniname
