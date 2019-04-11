@@ -34,9 +34,7 @@ class ResultView(TemplateView):
         conf = self._read_config(name)
         keys = conf["keys"]
         cls = conf["class"]
-        headers = zip(cls, _dict_formatter(dict(zip(keys,
-                                                    zip(conf["en"], conf["cn"]))),
-                                           conf["th"]))
+        headers = zip(cls, conf["th"])
 
         result = defaultdict(list)
         filepath = os.path.join(basedir, "result.csv")

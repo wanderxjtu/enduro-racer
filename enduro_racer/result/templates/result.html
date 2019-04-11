@@ -48,7 +48,7 @@
         <tr>
             {% autoescape off %}
             {% for cls, cnt in rider %}
-            <td class="{{ cls }}">{{ cnt|default:"N/A" }}</td>
+            <td class="{{ cls }}">{{ cnt|default:"n/a" }}</td>
             {% endfor %}
             {% endautoescape %}
         </tr>
