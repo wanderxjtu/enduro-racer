@@ -52,8 +52,4 @@ class ResultView(TemplateView):
 
     def _read_config(self, name):
         config = Competition.objects.values_list("resultConfig", flat=True).get(uniname=name)
-        """
-{"keys":["rank","no","name","team","start","end","certfilename","result","diff"],"cn":["排名","号码","姓名","车队","发车时间","撞线时间","","成绩","时间差"],"en":["Rank","No","Name","Team","StartAt","EndAt","","Result","Diff"],"th":["{rank[1]}<br>{rank[0]}","{no[1]}<br>{no[0]}","{name[1]}{name[0]}<br>{team[1]}{team[0]}","{start[1]}<br>{start[0]}","{end[1]}<br>{end[0]}","{result[1]}<br>{result[0]}","{diff[1]}<br>{diff[0]}"],"td":["{rank}","{no}","<p>{name}</p><p class="text-secondary">{team}</p>","{start}","{end}","<a href="{cert_link}">{result}</a>","{diff}"],"class":["","","","d-none d-lg-table-cell","d-none d-lg-table-cell","","d-none d-lg-table-cell"]}
-        """
-        print(config)
         return json.loads(config)
