@@ -1,3 +1,5 @@
+import json
+import os
 from collections import defaultdict
 # Create your views here.
 from django.views.generic import TemplateView
@@ -15,23 +17,40 @@ class ResultView(TemplateView):
         except Exception as e:
             comp_full_name = "比赛"
 
+        headers, result = self._read_result(compname)
+
         return {"comp_full_name": comp_full_name,
-                "cert_prefix": "/certs/{}".format(compname),
-                "result": self._read_result(compname)}
+                "result": result,
+                "headers": headers}
 
     def _read_result(self, name):
-        filepath = "/home/admin/%s/result.csv"
-        keys = ["rank", "no", "name", "team", "start", "end", "certfilename", "result", "diff", "points"]
+        def _dict_formatter(d, formats):
+            cert_link = "/certs/{}/{}".format(name, d["certfilename"]) if d["certfilename"] else ""
+            return map(lambda x: x.format(**d, cert_link=cert_link), formats)
+
+        basedir = "/home/admin/%s/" % name
+
+        conf = self._read_config(basedir)
+        keys = conf["keys"]
+        cls = conf["class"]
+        headers = zip(cls, _dict_formatter(dict(zip(keys,
+                                                    zip(conf["en"], conf["cn"]))),
+                                           conf["th"]))
+
         result = defaultdict(list)
+        filepath = os.path.join(basedir, "result.csv")
         with open(filepath) as f:
+            tdformat = conf["td"]
             for line in f:
                 values = line.split(",")
                 group = values[0].strip()
-                result[group].append(dict(zip(keys, map(lambda s: s.strip("-"),
-                                                        map(str.strip, values[1:])))))
+                data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
+                result[group].append(zip(cls, _dict_formatter(data, tdformat)))
 
-        for riderlist in result.values():
-            riderlist.sort(key=lambda x: x["no"])
-            riderlist.sort(key=lambda x: x["result"] or "99:99:99.999")
+        return list(headers), dict(result)
 
-        return dict(result)
+    def _read_config(self, basedir):
+        headerconfig = os.path.join(basedir, "header.json")
+        with open(headerconfig) as f:
+            conf = json.load(f)
+            return conf

@@ -18,7 +18,8 @@
         </div>
     </div>
     <div class="container-fluid mb-2 bg-secondary">
-        <div class=""></div><div class="tux ml-auto pr-3"></div>
+        <div class=""></div>
+        <div class="tux ml-auto pr-3"></div>
     </div>
 </header>
 
@@ -35,31 +36,21 @@
     <table class="table table-hover table-striped">
         <thead class="thead-dark text-nowrap">
         <tr>
-            <th>排名<br>Rank</th>
-            <th>号码<br>No</th>
-            <th>姓名 Name<br>车队 Team</th>
-            <th class="d-none d-lg-table-cell">发车时间<br>StartAt</th>
-            <th class="d-none d-lg-table-cell">到达时间<br>EndAt</th>
-            <th>成绩<br>Result</th>
-            <th class="d-none d-lg-table-cell">时间差<br>Diff</th>
-            <th class="d-none d-md-table-cell">积分<br>Points</th>
+            {% autoescape off %}
+            {% for cls, hdr in headers %}
+            <th class="{{ cls }}">{{ hdr }}</th>
+            {% endfor %}
+            {% endautoescape %}
         </tr>
         </thead>
         <tbody class="text-nowrap">
         {% for rider in riders %}
         <tr>
-            <td>{{ rider.rank }}</td>
-            <td>{{ rider.no }}</td>
-            <td><p>{{ rider.name }}</p><p class="text-secondary">{{ rider.team }}</p></td>
-            <td class="d-none d-lg-table-cell">{{ rider.start|default:"N/A" }}</td>
-            <td class="d-none d-lg-table-cell">{{ rider.end|default:"N/A" }}</td>
-            {% if rider.certfilename %}
-            <td><a href="{{ cert_prefix }}/{{ rider.certfilename }}"> {{ rider.result }} </a></td>
-            {% else %}
-            <td>{{ rider.result|default:"DNS" }}</td>
-            {% endif %}
-            <td class="d-none d-lg-table-cell">{{ rider.diff|default:"N/A" }}</td>
-            <td class="d-none d-md-table-cell">{{ rider.points|default:"N/A" }}</td>
+            {% autoescape off %}
+            {% for cls, cnt in rider %}
+            <td class="{{ cls }}">{{ cnt|default:"N/A" }}</td>
+            {% endfor %}
+            {% endautoescape %}
         </tr>
         {% endfor %}
         </tbody>
