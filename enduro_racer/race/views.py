@@ -110,13 +110,13 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
             # allow update some info
             racer.region = obj["region"]
             racer.phoneNumber = obj["phoneNumber"]
-            racer.parentName = obj.get("parentName", "")
-            racer.parentNumber = obj.get("parentNumber", "")
+            racer.ecpName = obj["ecpName"]
+            racer.ecpNumber = obj["ecpNumber"]
         except RacerInfo.DoesNotExist:
             # idtype is not posted here. check region instead.
             racer = RacerInfo(realName=obj["realName"], gender=obj["gender"], birthday=obj["birthday"],
                               region=obj["region"], idType=idtype, idNumber=obj["idNumber"],
-                              phoneNumber=obj["phoneNumber"])
+                              phoneNumber=obj["phoneNumber"], ecpName=obj["ecpName"], ecpNumber=obj["ecpNumber"])
         racer.save()
 
         qs = Team.objects.all()
@@ -143,12 +143,6 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
             return False, "请填写正确的号码"
 
         obj["birthday"] = datetime.strptime(obj["birthday"].split("T")[0], "%Y-%m-%d")
-        today = datetime.today()
-
-        # check if under age
-        # if today.replace(year=today.year - 18) < obj["birthday"]:
-        #     if not all((obj.get("parentName"), self._is_phone_number(obj.get("parentNumber")))):
-        #         return False, "未成年人请填写家长信息"
 
         # check_racer_number
         comp = self.get_comp(uniname=self.kwargs['competition_uniname'])

@@ -23,7 +23,8 @@
             </div>
             <button class="btn btn-primary" ng-click="showCompetitionDetail(comp_uniname)">View Competition</button>
         </div>
-        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-if="comp.signUpOpen == true" ng-hide="signup_result.success" novalidate>
+        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-if="comp.signUpOpen == true"
+              ng-hide="signup_result.success" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
                 <!--Racer Info-->
                 <div class="form-group col-xs-12">
@@ -87,10 +88,26 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Cellphone </label>
+                        <label class="col-sm-3 col-form-label">Cellphone</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="number" minlength="11" ng-model="racer.phoneNumber"
                                    name="phone number" required>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="racer.ecpName">Emergency Contact</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="racer.ecpName" ng-model="racer.ecpName"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">E.Contact Cellphone</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="racer.ecpNumber"
+                                   ng-model="racer.ecpNumber" required>
                         </div>
                     </div>
                 </div>
