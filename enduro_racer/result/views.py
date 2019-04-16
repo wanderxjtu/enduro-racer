@@ -4,6 +4,7 @@ from collections import defaultdict
 # Create your views here.
 from django.conf import settings
 from django.views.generic import TemplateView
+from django.utils.html import escape
 
 from race.models.competition import Competition
 
@@ -43,7 +44,7 @@ class ResultView(TemplateView):
             for line in f:
                 values = line.split(",")
                 group = values[0].strip()
-                data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
+                data = dict(zip(keys, map(escape, map(lambda s: s.strip("-"), map(str.strip, values[1:])))))
                 result[group].append(zip(cls, _dict_formatter(data, tdformat)))
 
         return list(headers), dict(result)
