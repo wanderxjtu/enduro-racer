@@ -21,6 +21,6 @@ from django.views.decorators.cache import cache_page
 from .views import ResultView
 
 urlpatterns = [
-    path('<str:competition_uniname>', cache_page(15)(ResultView.as_view())),
-    path('<str:competition_uniname>/<str:game>', cache_page(15)(ResultView.as_view())),
+    path('<str:competition_uniname>/', cache_page(15)(ResultView.as_view())),
+    path('<str:competition_uniname>/<str:game>/', cache_page(15)(ResultView.as_view())),
 ]
