@@ -20,35 +20,39 @@ class ResultView(TemplateView):
         except Exception as e:
             comp_full_name = "比赛"
 
-        headers, result = self._read_result(compname, game)
+        conf = self._read_config(compname)
+        raw_result = self._read_result(compname, game, **conf)
+        headers, result = self._render_format(compname, raw_result, **conf)
 
         return {"comp_full_name": comp_full_name,
                 "result": result,
                 "headers": headers}
 
-    def _read_result(self, name, game=None):
-        def _dict_formatter(d, formats):
-            cert_link = "/certs/{}/{}".format(name, d["certfilename"]) if d["certfilename"] else ""
-            return map(lambda x: x.format(**d, cert_link=cert_link), formats)
-
+    def _read_result(self, name, game=None, *, keys, **conf):
         basedir = settings.RESULT_BASE_PATH.format(name)
-
-        conf = self._read_config(name)
-        keys = conf["keys"]
-        cls = conf["class"]
-        headers = zip(cls, conf["th"])
 
         result = defaultdict(list)
         filename = game or "result"
         filepath = os.path.join(basedir, filename + ".csv")
         with open(filepath) as f:
-            tdformat = conf["td"]
             for line in f:
                 values = line.split(",")
                 group = values[0].strip()
-                data = dict(zip(keys, map(escape, map(lambda s: s.strip("-"), map(str.strip, values[1:])))))
-                result[group].append(zip(cls, _dict_formatter(data, tdformat)))
+                data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
+                result[group].append(data)
+        return result
 
+    def _render_format(self, name, result, *, th, td, **conf):
+        def _dict_formatter(d, formats):
+            cert_link = "/certs/{}/{}".format(name, d["certfilename"]) if d["certfilename"] else ""
+            # for now we can control the contents
+            # d2 = {k: escape(v) for k, v in d.items()}
+            return map(lambda x: x.format(**d, cert_link=cert_link), formats)
+
+        cls = conf["class"]
+        headers = zip(cls, th)
+        for group, l in result.items():
+            result[group] = (zip(cls, _dict_formatter(data, td)) for data in l)
         return list(headers), dict(result)
 
     def _read_config(self, name):
