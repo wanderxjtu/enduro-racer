@@ -32,7 +32,7 @@ class ResultView(TemplateView):
 
     def _render_format(self, name, result, *, th, td, **conf):
         def _dict_formatter(d: dict, formats):
-            cert_filename = d.get("certfilename") or CertGen(name).get_cert_filename(d["rank"], d["name"])
+            cert_filename = d.get("certfilename") or CertGen(name, conf["certy"]).get_cert_filename(d["rank"], d["name"])
             cert_link = "/certs/{}/{}".format(name, cert_filename) if d["rank"] else ""
             # for now we can control the contents
             # d2 = {k: escape(v) for k, v in d.items()}
