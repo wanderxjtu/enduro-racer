@@ -41,7 +41,7 @@ def render_cert_batch(compname):
     for group, l in result.items():
         for data in l:
             if data["rank"]:
-                filename = data.get("certfilename", g.get_cert_filename(data["rank"], data["name"]))
+                filename = data.get("certfilename") or g.get_cert_filename(data["rank"], data["name"])
                 # fix rank text on the picture
                 rank = RANK_FIXER.get(data["rank"], data["rank"].lstrip("0"))
                 g.render_cert(data["name"], rank, group, data["result"], filename=filename)

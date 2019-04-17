@@ -50,8 +50,10 @@ class CertGen(object):
 
         image.composite(qrimage, *temp.qr_style.position)
 
-        image.save(filename=os.path.join(settings.CERT_SAVE_PATH, self.comp_name,
-                                         filename or self.get_cert_filename(*contents[1::-1])))
+        save_file = os.path.join(settings.CERT_SAVE_PATH, self.comp_name,
+                                 filename or self.get_cert_filename(*contents[1::-1]))
+        print(save_file)
+        image.save(filename=save_file)
 
 
 if __name__ == "__main__":
