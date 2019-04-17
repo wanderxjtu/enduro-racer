@@ -26,6 +26,13 @@ from certy.certgen import CertGen
 from result.read_result_csv import read_result
 from result.utils import read_config
 
+RANK_FIXER = {
+    "冠军": "1",
+    "亚军": "2",
+    "季军": "3",
+    "荣誉领骑": "0",
+}
+
 
 def render_cert_batch(compname):
     # the cert should use on finals result, so no need to support game
@@ -34,8 +41,9 @@ def render_cert_batch(compname):
     for group, l in result.items():
         for data in l:
             if data["rank"]:
-                filename = data.get("certfilename", g.get_cert_filename(data["rank"], data["name"]))
-                g.render_cert(compname, data["name"], data["rank"], group, data["result"], filename=filename)
+                rank = RANK_FIXER.get(data["rank"], data["rank"].lstrip("0"))
+                filename = data.get("certfilename", g.get_cert_filename(rank, data["name"]))
+                g.render_cert(data["name"], rank, group, data["result"], filename=filename)
 
 
 if __name__ == "__main__":
