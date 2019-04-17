@@ -56,4 +56,4 @@ class CertGen(object):
 
 if __name__ == "__main__":
     g = CertGen(sys.argv[1])
-    g.render_cert(*sys.argv[1:6])
+    g.render_cert(*sys.argv[2:6])
