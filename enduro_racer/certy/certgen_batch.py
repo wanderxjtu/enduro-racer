@@ -15,11 +15,11 @@
    File Name : certgen_batch.py
    Author : jiaqi.hjq
 """
+import os
 import sys
 import django
 
-from certy.competition_config import TEMPLATE_CONFIG
-
+sys.path.append(os.path.dirname(__file__) + "/..")
 django.setup()
 
 from certy.certgen import CertGen
@@ -36,8 +36,9 @@ RANK_FIXER = {
 
 def render_cert_batch(compname):
     # the cert should use on finals result, so no need to support game
-    result = read_result(compname, **read_config(compname))
-    g = CertGen(compname)
+    compconfig = read_config(compname)
+    result = read_result(compname, **compconfig)
+    g = CertGen(compname, compconfig["certy"])
     for group, l in result.items():
         for data in l:
             if data["rank"]:

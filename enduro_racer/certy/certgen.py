@@ -4,19 +4,17 @@ import sys
 
 from django.conf import settings
 
-sys.path.append(os.path.dirname(__file__) + "/..")
-
 from wand.drawing import Drawing
 from wand.color import Color
 
 from certy.qrsigner import qrsign
-from certy.competition_config import TEMPLATE_CONFIG
+from certy.certi_templates import CompConfig
 
 
 class CertGen(object):
-    def __init__(self, compname):
+    def __init__(self, compname, config):
         self.comp_name = compname
-        self.temp_conf = TEMPLATE_CONFIG[compname]
+        self.temp_conf = CompConfig.from_dict(config)
 
     def get_draw(self):
         draw = Drawing()
@@ -54,8 +52,3 @@ class CertGen(object):
                                  filename or self.get_cert_filename(*contents[1::-1]))
         print(save_file)
         image.save(filename=save_file)
-
-
-if __name__ == "__main__":
-    g = CertGen(sys.argv[1])
-    g.render_cert(*sys.argv[2:6])
