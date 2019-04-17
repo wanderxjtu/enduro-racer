@@ -25,7 +25,7 @@ class CertGen(object):
         return draw
 
     def get_cert_filename(self, rank, name):
-        fn = rank + name + self.temp_conf.template.file_suffix
+        fn = rank + "-" + name + self.temp_conf.template.file_suffix
         return fn.replace("/", "-")
 
     def render_cert(self, *contents, filename=None):
