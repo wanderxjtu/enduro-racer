@@ -10,7 +10,9 @@ angular
     "ui.bootstrap",
     "ngRoute",
     "ngCookies",
-    "angular.filter"
+    "angular.filter",
+    "ngSanitize",
+    "ng-showdown"
   ])
   .config([
     "$routeProvider",
