@@ -13,7 +13,7 @@
         <div class="col-12 col-xl-8 col-xl-offset-2 container-fluid">
             <div class="row">
                 <div class="col-12 col-md-6"
-                     ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
+                     ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate':true | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
                     <div class="card mb-1 mb-md-3 hibp-card">
                         <div class="card-body col-12" ng-click="showCompetition(comp.uniname)">
                             <h5 class="card-title">{{ comp.name }}</h5>
