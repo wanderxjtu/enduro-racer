@@ -30,7 +30,7 @@ class CertGen(object):
         """contents should be ordered as 'name, rank, cate, result, ...' """
         temp = self.temp_conf.template
         image = temp.get_image()
-        for content, style in zip(contents + self.temp_conf.extra_contents, temp.content_styles):
+        for content, style in zip(contents + tuple(self.temp_conf.extra_contents), temp.content_styles):
             draw = self.get_draw()
             draw.font_size = style.font_size
             draw.fill_color = Color(style.font_color)
@@ -47,8 +47,10 @@ class CertGen(object):
         qrimage.resize(*temp.qr_style.size)
 
         image.composite(qrimage, *temp.qr_style.position)
+        del qrimage
 
         save_file = os.path.join(settings.CERT_SAVE_PATH, self.comp_name,
                                  filename or self.get_cert_filename(*contents[1::-1]))
         print(save_file)
         image.save(filename=save_file)
+        del image

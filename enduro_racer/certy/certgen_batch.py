@@ -39,8 +39,10 @@ def render_cert_batch(compname):
     compconfig = read_config(compname)
     result = read_result(compname, **compconfig)
     g = CertGen(compname, compconfig["certy"])
+    count = 0
     for group, l in result.items():
         for data in l:
+            count += 1
             if data["rank"]:
                 filename = data.get("certfilename") or g.get_cert_filename(data["rank"], data["name"])
                 # fix rank text on the picture
