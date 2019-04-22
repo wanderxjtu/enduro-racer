@@ -11,9 +11,10 @@
                     <i class="fas fa-arrow-circle-right"></i> {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
             </div>
             <div class="col-12 container text-center">
-                <a href="" class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp_uniname)">Sign
-                    Up</a>
-                <a href="" class="btn" ng-click="showCompetitionGroup(comp_uniname)">View Grouping</a>
+                <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp_uniname)"
+                        ng-disabled="!comp.signUpOpen">Sign Up
+                </button>
+                <button class="btn" ng-click="showCompetitionGroup(comp_uniname)">View Grouping</button>
             </div>
         </div>
     </div>

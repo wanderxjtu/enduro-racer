@@ -22,9 +22,10 @@
                             <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
                         </div>
                         <div class="card-footer container">
-                            <a href="" class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp.uniname)">Sign
-                                Up</a>
-                            <a href="" class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</a>
+                            <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp.uniname)"
+                                    ng-disabled="!comp.signUpOpen">Sign Up
+                            </button>
+                            <button class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</button>
                         </div>
                     </div>
                 </div>
