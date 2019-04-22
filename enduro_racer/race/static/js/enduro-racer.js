@@ -18,6 +18,9 @@ angular
       $routeProvider.when("/", {
         templateUrl: STATIC + "partial/competitions.html",
       });
+      $routeProvider.when("/all", {
+        templateUrl: STATIC + "partial/competitions.html",
+      });
 
       $routeProvider.when("/competition/:comp", {
         templateUrl: STATIC + "partial/competition.html",
@@ -211,7 +214,7 @@ angular
     function($scope, $http, $location, $cookies) {
       $scope.$cookies = $cookies;
       $scope.competitions = null;
-      $scope.showOpen = true;
+      $scope.showOpen = $location.path();
       $scope.pageSize = 10;
       $scope.maxSize = 8;
       $scope.currentPage = 1;
@@ -221,7 +224,7 @@ angular
 
 
       $http
-        .get($scope.API + "competitions/", { params: { showOpen: $scope.showOpen} })
+        .get($scope.API + "competitions/", { params: { showOpen: !$scope.showOpen.endsWith("all")} })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
         },function(error) {
