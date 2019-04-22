@@ -8,6 +8,11 @@ import base64
 from certy.wandimage import WandImage
 
 
+# FIXME:
+# Memory might leak occasionally when using subprocess
+# Try to use pyOpenSSL instead
+#
+
 def qrsign(privkey_file, content, *, fill_color, back_color):
     cmd = ["openssl", "dgst", "-sha256", "-sign", privkey_file]
     cproc = subprocess.run(cmd, input=content.encode('utf-8'), check=True, stdout=subprocess.PIPE)
