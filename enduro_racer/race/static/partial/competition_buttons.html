@@ -1,0 +1,11 @@
+<div ng-if="comp.signUpOpen">
+    <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp_uniname)">
+        Sign Up
+    </button>
+    <button class="btn" ng-click="showCompetitionGroup(comp_uniname)">View
+        Grouping
+    </button>
+</div>
+<div ng-if="!comp.signUpOpen">
+    <a href="/result/{{ comp_uniname }}" class="btn btn-primary">View Result</a>
+</div>

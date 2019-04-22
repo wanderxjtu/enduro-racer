@@ -1,6 +1,6 @@
 <div ng-controller="CompetitionCtrl" class="container">
     <div ng-include="PARTIAL + 'competition_header.html'"></div>
-    <div class="container" ng-if="comp !== null">
+    <div ng-if="comp !== null">
         <div class="col-12 col-md-8 offset-md-2 container">
             <div class="col-12">
                 <p markdown-to-html="comp.description"></p>
@@ -9,11 +9,7 @@
                     <i class="fas fa-calendar-day"></i> {{ comp.startDate | date:'yyyy-MM-dd' }}
                     <i class="fas fa-arrow-circle-right"></i> {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
             </div>
-            <div class="col-12 container text-center">
-                <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp_uniname)"
-                        ng-disabled="!comp.signUpOpen">Sign Up
-                </button>
-                <button class="btn" ng-click="showCompetitionGroup(comp_uniname)">View Grouping</button>
+            <div class="text-center" ng-include="PARTIAL + 'competition_buttons.html'">
             </div>
         </div>
     </div>

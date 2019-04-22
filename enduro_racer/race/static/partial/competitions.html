@@ -1,6 +1,6 @@
-<div ng-controller="IndexCtrl" class="container">
+<div ng-controller="IndexCtrl" class="">
     <div class="container row" ng-show="USER === null && competitions !== null && competitions.length === 0">
-        <div class="col-xs-12 col-md-offset-3 col-md-6 container">
+        <div class="col-12 col-md-offset-3 col-md-6 container">
             <h4>Hmmmm...Looks pretty empty in here. </h4>
         </div>
     </div>
@@ -9,23 +9,20 @@
         <i class="fa fa-spinner fa-spin fa-4x"></i>
     </div>
 
-    <div class="col-12 container" ng-if="competitions !== null">
-        <div class="col-xs-12 col-xl-8 col-xl-offset-2 container-fluid">
+    <div ng-if="competitions !== null">
+        <div class="col-12 col-xl-8 col-xl-offset-2 container-fluid">
             <div class="row">
-                <div class="col-xs-12 col-md-6 container"
+                <div class="col-12 col-md-6"
                      ng-repeat="comp in filtered = (competitions | filter:searchText) | orderBy:'endDate' | startFrom:(currentPage - 1)*pageSize | limitTo:pageSize">
-                    <div class="card mb-1 hibp-card">
-                        <div class="card-body col-xs-12" ng-click="showCompetition(comp.uniname)">
+                    <div class="card mb-1 mb-md-3 hibp-card">
+                        <div class="card-body col-12" ng-click="showCompetition(comp.uniname)">
                             <h5 class="card-title">{{ comp.name }}</h5>
                             <h6 class="card-subtitle"><i class="fas fa-map-marker"></i> {{ comp.location }}</h6>
                             <!--<p>{{ comp.description }}</p>-->
                             <p>{{ comp.startDate | date:'yyyy-MM-dd' }} - {{ comp.endDate | date:'yyyy-MM-dd' }}</p>
                         </div>
-                        <div class="card-footer container">
-                            <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp.uniname)"
-                                    ng-disabled="!comp.signUpOpen">Sign Up
-                            </button>
-                            <button class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</button>
+                        <div class="card-footer text-center"
+                             ng-include="PARTIAL + 'competition_buttons.html'">
                         </div>
                     </div>
                 </div>
