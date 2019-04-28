@@ -219,7 +219,8 @@ angular
     "$http",
     "$location",
     "$cookies",
-    function($scope, $http, $location, $cookies) {
+    "$window",
+    function($scope, $http, $location, $cookies, $window) {
       $scope.$cookies = $cookies;
       $scope.competitions = null;
       $scope.showOpen = $location.path();
@@ -235,6 +236,7 @@ angular
         .get($scope.API + "competitions/", { params: { showOpen: !$scope.showOpen.endsWith("all")} })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
+          $window.document.title = "HIBP";
         },function(error) {
           console.error("Fetching competitions failed");
         });
@@ -256,7 +258,8 @@ angular
     "$route",
     "$cookies",
     "$location",
-    function($scope, $http, $route, $cookies, $location) {
+    "$window",
+    function($scope, $http, $route, $cookies, $location, $window) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
 
@@ -268,9 +271,11 @@ angular
         .get($scope.API + "competition/" + $scope.comp_uniname)
         .then(function(response) {
           $scope.comp = response.data.object;
+          $window.document.title = $scope.comp.name;
         },function(error) {
           console.error("Fetching competition failed");
         });
+
 
       $scope.showCompetitionGroup = function(comp) {
         $location.path("/competition/" + comp + "/groups/");
