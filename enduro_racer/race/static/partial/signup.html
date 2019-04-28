@@ -10,12 +10,6 @@
                     Contact {{ comp.manager }} if you have submitted wrong personal info.</p>
             </div>
         </div>
-        <div class="container" ng-if="signup_result.success == false">
-            <div class="alert alert-danger">
-                <p>报名失败：{{ signup_result.message }} </p>
-                <p>Sign up failed: {{ signup_result.message }} </p>
-            </div>
-        </div>
         <div class="container" ng-if="comp.signUpOpen != true">
             <div class="alert alert-danger">
                 <p>报名已关闭，请联系赛事管理员{{ comp.manager }}。</p>
@@ -164,6 +158,12 @@
                     </div>
                 </div>
                 <!--Submit -->
+                <div class="container" ng-if="signup_result.success == false">
+                    <div class="alert alert-danger">
+                        <p>报名失败：{{ signup_result.message }} </p>
+                        <p>Sign up failed: {{ signup_result.message }} </p>
+                    </div>
+                </div>
                 <div class="container text-center">
                     <button class="btn btn-primary" type="submit" ng-click="signUp(racer)">Sign Up</button>
                     <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">View Detail</button>
