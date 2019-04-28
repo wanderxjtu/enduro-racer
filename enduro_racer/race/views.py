@@ -91,6 +91,8 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
     success_url = "signup_success.html"
 
     def post(self, request, *args, **kwargs):
+        request.META["CSRF_COOKIE_USED"] = True
+
         obj = json.loads(request.body.decode('utf-8'))
         try:
             succ, msg = self.validate(obj)
