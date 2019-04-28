@@ -89,6 +89,12 @@ angular
       $locationProvider.hashPrefix('');
     }
   ])
+  .config([
+    "$showdownProvider",
+    function($showdownProvider) {
+      $showdownProvider.setOption("parseImgDimensions", true);
+    }
+  ])
   .directive("ngSetFocus", [
     "$timeout",
     function($timeout) {
