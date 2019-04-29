@@ -29,6 +29,8 @@ class CompStatus(Enum):
 class Serials(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=65535)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -53,6 +55,8 @@ class Competition(models.Model):
     CompetitionStatus = models.SmallIntegerField(choices=[(s.value, s) for s in CompStatus],
                                                  default=CompStatus.Pending.value)  # see CompStatus
     resultConfig = models.TextField(max_length=65535)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.uniname

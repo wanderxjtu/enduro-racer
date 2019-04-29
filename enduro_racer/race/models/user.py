@@ -36,6 +36,8 @@ class User(models.Model):
     password = models.CharField(max_length=255)  # reserve
     racer = models.ForeignKey(RacerInfo, on_delete=models.SET_NULL, null=True, blank=True)
     role = models.IntegerField(choices=[(s.value, s) for s in Role], default=Role.NormalUser.value)  # pointed to role
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.displayname
@@ -45,6 +47,8 @@ class Oauth(models.Model):
     oauthtype = models.CharField(max_length=255)
     oauthname = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.displayname

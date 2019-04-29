@@ -21,6 +21,8 @@ from django.db import models
 class Config(models.Model):
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=4096)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.key

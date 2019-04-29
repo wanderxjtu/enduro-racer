@@ -45,6 +45,8 @@ class Team(models.Model):
     name = models.CharField(max_length=255)
     leaderName = models.CharField(max_length=255)
     leaderPhone = models.CharField(max_length=32)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -64,6 +66,8 @@ class RacerInfo(models.Model):
 
     ecpName = models.CharField(max_length=255, null=True, blank=True)  # emergency contact person
     ecpNumber = models.CharField(max_length=32, null=True, blank=True)  # emergency contact phone
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.realName
@@ -79,6 +83,8 @@ class RacerLog(models.Model):
                                       default=RacerStatus.WaitForPayment.value)
     rank = models.SmallIntegerField(null=True, blank=True)
     points = models.SmallIntegerField(null=True, blank=True)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.competitionId.uniname + "," + str(self.racerTag) + "," + self.racerId.realName
