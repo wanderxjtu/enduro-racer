@@ -19,7 +19,7 @@ import logging
 import traceback
 from datetime import datetime
 
-LOGGER = logging.getLogger(__file__)
+LOGGER = logging.getLogger(__name__)
 import json
 
 from django.views.generic.edit import ProcessFormView
