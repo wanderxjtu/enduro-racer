@@ -86,7 +86,7 @@ class RacerLog(models.Model):
 
 class RacerResults(models.Model):
     # One competition may have multiple result records,
-    # such as Qualifying, or Whip, or multiple segment like EWS
+    # such as Qualifying, or Whip, or multiple stages like EWS
     racerLogId = models.ForeignKey(RacerLog, on_delete=models.DO_NOTHING)
     launchTime = models.DateTimeField()
     finishTime = models.DateTimeField()
