@@ -81,7 +81,7 @@ class RacerLog(models.Model):
     points = models.SmallIntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.competitionId.uniname + "," + self.racerTag + "," + self.racerId.realName
+        return self.competitionId.uniname + "," + str(self.racerTag) + "," + self.racerId.realName
 
 
 class RacerResults(models.Model):
