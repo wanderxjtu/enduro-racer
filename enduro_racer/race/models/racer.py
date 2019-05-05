@@ -45,6 +45,8 @@ class Team(models.Model):
     name = models.CharField(max_length=255)
     leaderName = models.CharField(max_length=255)
     leaderPhone = models.CharField(max_length=32)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -62,6 +64,11 @@ class RacerInfo(models.Model):
     idNumber = models.CharField(max_length=255, unique=True)  # id number or passport number
     phoneNumber = models.CharField(max_length=32)
 
+    ecpName = models.CharField(max_length=255, null=True, blank=True)  # emergency contact person
+    ecpNumber = models.CharField(max_length=32, null=True, blank=True)  # emergency contact phone
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.realName
 
@@ -71,19 +78,21 @@ class RacerLog(models.Model):
     competitionId = models.ForeignKey(Competition, on_delete=models.DO_NOTHING)  # competition
     teamId = models.ForeignKey(Team, on_delete=models.DO_NOTHING)  # pointed to team
     group = models.CharField(max_length=32)
-    racerTag = models.CharField(max_length=16)  # number plate
+    racerTag = models.CharField(max_length=16, null=True, blank=True)  # number plate
     status = models.SmallIntegerField(choices=[(s.value, s) for s in RacerStatus],
                                       default=RacerStatus.WaitForPayment.value)
     rank = models.SmallIntegerField(null=True, blank=True)
     points = models.SmallIntegerField(null=True, blank=True)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.competitionId.uniname + "," + self.racerTag + "," + self.racerId.realName
+        return self.competitionId.uniname + "," + str(self.racerTag) + "," + self.racerId.realName
 
 
 class RacerResults(models.Model):
     # One competition may have multiple result records,
-    # such as Qualifying, or Whip, or multiple segment like EWS
+    # such as Qualifying, or Whip, or multiple stages like EWS
     racerLogId = models.ForeignKey(RacerLog, on_delete=models.DO_NOTHING)
     launchTime = models.DateTimeField()
     finishTime = models.DateTimeField()

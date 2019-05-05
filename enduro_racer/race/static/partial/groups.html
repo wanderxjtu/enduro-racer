@@ -1,32 +1,33 @@
-<div ng-controller="GroupsCtrl" class="container">
-    <div ng-show="groups === null" class="text-center container">
-        <i class="fa fa-spinner fa-spin fa-4x"></i>
-    </div>
-
-    <div class="container mt-2" ng-if="groups !== null">
-        <div class="col-xs-12 col-md-8 offset-md-2 container"
+<div ng-controller="CompetitionCtrl" class="">
+    <div ng-include="PARTIAL + 'competition_header.html'"></div>
+    <div class="mt-3" ng-controller="GroupsCtrl" ng-if="groups !== null">
+        <div class="col-sm-8 offset-sm-2"
              ng-repeat="(groupname, racers) in groups | groupBy: 'group'">
-            <h5 class="card-title text-center">{{ groupname }} Group: {{ racers.length }}
+            <h5 class="container">{{ groupname }} Group: {{ racers.length }}
                 <ng-pluralize count="racers.length" when="{'one': 'Racer', 'other':'Racers'}"></ng-pluralize>
             </h5>
-            <table class="table">
-                <thead>
+            <table class="table table-striped">
+                <thead class="thead-dark text-nowrap">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">GENDER</th>
-                    <th scope="col">TEAM</th>
+                    <th>号码<br>No</th>
+                    <th>姓名 Name<br>车队 Team</th>
                 </tr>
                 </thead>
-                <tbody ng-repeat="racer in racers | orderBy: 'racerTag'">
-                <tr scope="row">
-                    <td scope="row">{{ racer.racerTag}}</td>
-                    <td>{{ racer.racerId__realName}}</td>
-                    <td>{{ racer.racerId__gender | genderFromInt }}</td>
-                    <td>{{ racer.teamId__name}}</td>
+                <tbody class="text-nowrap">
+                <tr ng-repeat="racer in racers | orderBy: 'racerTag'">
+                    <td>{{ racer.racerTag }}</td>
+                    <td><p>{{ regionsemoji[racer.racerId__region] }}{{ racer.racerId__realName }}
+                        <i class="fa fa-{{ racer.racerId__gender | genderFromInt }}" aria-hidden="true"></i></p>
+                        <p class="text-secondary">{{ racer.teamId__name }}</p></td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="col-12 container text-center">
+            <button class="btn btn-primary" type="submit" ng-click="showCompetitionSignup(comp_uniname)"
+                    ng-disabled="!comp.signUpOpen">报名 SignUp
+            </button>
+            <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">赛事详情 Detail</button>
         </div>
     </div>
 </div>

@@ -1,29 +1,30 @@
-<div ng-controller="CompetitionSignupCtrl" class="container">
-    <div ng-show="comp === null" class="text-center container">
-        <i class="fa fa-spinner fa-spin fa-4x"></i>
-    </div>
-
-    <div class="container" ng-if="comp !== null">
+<div ng-controller="CompetitionCtrl" class="container">
+    <div ng-include="PARTIAL + 'competition_header.html'"></div>
+    <div class="container" ng-controller="CompetitionSignupCtrl" ng-if="comp !== null">
         <!--first to find racer info corresponding to currentUser, provide a NEW racer button to entering new
         racer basic info-->
-        <div class="container text-center">
-            <h5 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
-                <i class="fas fa-bicycle"></i>
-                <span class="text-dark">{{ comp.name }}</span>
-            </h5>
+        <div class="container" ng-if="signup_result.success">
+            <div class="alert alert-success">
+                <p>您已报名成功 {{ comp.name }} ，请及时缴纳参赛费用 {{ comp.signUpFee }}。个人信息如有误请联系赛事管理员 {{ comp.manager }}</p>
+                <p>You have signed up {{ comp.name }}，please pay your entry fees {{ comp.signUpFee }}.
+                    Contact {{ comp.manager }} if you have submitted wrong personal info.</p>
+            </div>
         </div>
-        <form name="competitionSignUp" class="form col-xs-12" novalidate>
+        <div class="container" ng-if="comp.signUpOpen != true">
+            <div class="alert alert-danger">
+                <p>报名已关闭，请联系赛事管理员{{ comp.manager }}。</p>
+                <p>Signing up closed, please contact Competiton Manager {{ comp.manager }}.</p>
+            </div>
+            <button class="btn btn-primary" ng-click="showCompetitionDetail(comp_uniname)">View Competition</button>
+        </div>
+        <form name="competitionSignUp" class="form col-xs-12 mt-2" ng-if="comp.signUpOpen == true"
+              ng-hide="signup_result.success" novalidate>
             <div class="col-xs-12 col-md-10 offset-md-1">
-                <!--Racer choices-->
-                <div class="form-group row">
-                    <input class="form-check-inline" type="checkbox" ng-model="racer.new" name="newRacer" required/>
-                    <label class="form-check-label">New Racer</label>
-                </div>
                 <!--Racer Info-->
                 <div class="form-group col-xs-12">
                     <!--Name-->
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Name</label>
+                        <label class="col-sm-3 col-form-label">姓名 Name</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="text" ng-model="racer.realName" name="realName"
                                    required>
@@ -31,22 +32,22 @@
                     </div>
                     <!--Gender-->
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Gender</label>
+                        <label class="col-sm-3 col-form-label">性别 Gender</label>
                         <div class="col-sm-9 row">
                             <div class="col-sm-6">
                                 <input class="form-check-inline" type="radio" ng-model="racer.gender" value="1"
                                        checked/>
-                                <label class="form-check-label">Male</label>
+                                <label class="form-check-label">男 Male</label>
                             </div>
                             <div class="col-sm-6">
                                 <input class="form-check-inline" type="radio" ng-model="racer.gender" value="0"/>
-                                <label class="form-check-label">Female</label>
+                                <label class="form-check-label">女 Female</label>
                             </div>
                         </div>
                     </div>
                     <!--Birthday limit to > 18 years old-->
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Birthday</label>
+                        <label class="col-sm-3 col-form-label">生日 Birthday</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="date" ng-model="racer.birthday" name="birthday"
                                    ng-max="today" required>
@@ -54,7 +55,7 @@
                     </div>
                     <!--Region-->
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Region</label>
+                        <label class="col-sm-3 col-form-label">地区 Region</label>
                         <div class="col-sm-9">
                             <select class="form-control" ng-model="racer.region" required>
                                 <option ng-repeat="(alpha3, regionname) in allregions" value="{{ alpha3 }}">
@@ -66,7 +67,7 @@
                         <input type="hidden" ng-if="racer.region != 'CHN'" ng-model="racer.idType" value="1">
                     </div>
                     <div class="form-group row" ng-if="racer.region == 'CHN'">
-                        <label class="col-sm-3 col-form-label">Id No. </label>
+                        <label class="col-sm-3 col-form-label">身份证号</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="text" minlength="18" maxlength="18"
                                    ng-model="racer.idNumber"
@@ -81,10 +82,26 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Cellphone </label>
+                        <label class="col-sm-3 col-form-label">手机号 Cellphone</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="number" minlength="11" ng-model="racer.phoneNumber"
                                    name="phone number" required>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="racer.ecpName">紧急联系人 Emergency Contact</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="racer.ecpName" ng-model="racer.ecpName"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">紧急联系人电话 E.Contact Cellphone</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="racer.ecpNumber"
+                                   ng-model="racer.ecpNumber" required>
                         </div>
                     </div>
                 </div>
@@ -92,34 +109,34 @@
                 <!--Team Info-->
                 <div class="form-group col-xs-12">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Team</label>
+                        <label class="col-sm-3 col-form-label">车队 Team</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="racer.team" ng-model="racer.teamId" required>
                                 <option ng-repeat="team in teams | orderBy: 'name'" value="{{ team.id }}">
                                     {{ team.name }}
                                 </option>
-                                <option value="NEW">- CREATE NEW TEAM -</option>
+                                <option value="NEW">- 新增车队 - CREATE NEW TEAM -</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="form-group col-xs-12" ng-if="racer.teamId == 'NEW'">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Team Name</label>
+                        <label class="col-sm-3 col-form-label">车队名 Team Name</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="racer.teamName" ng-model="racer.teamName"
                                    required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Team Leader</label>
+                        <label class="col-sm-3 col-form-label">领队 Team Leader</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="racer.teamLeader" ng-model="racer.teamLeader"
                                    required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">TL Phone</label>
+                        <label class="col-sm-3 col-form-label">领队电话 TL Phone</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="racer.teamLeaderPhone"
                                    ng-model="racer.teamLeaderPhone" required>
@@ -129,7 +146,7 @@
                 <!--Racer Group-->
                 <div class="form-group col-xs-12">
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Group</label>
+                        <label class="col-sm-3 col-form-label">组别 Group</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="racer.group" ng-model="racer.group">
                                 <option ng-repeat="group in comp.groupSetting.split(',')" value="{{ group.trim() }}">{{
@@ -141,9 +158,15 @@
                     </div>
                 </div>
                 <!--Submit -->
+                <div class="container" ng-if="signup_result.success == false">
+                    <div class="alert alert-danger">
+                        <p>报名失败：{{ signup_result.message }} </p>
+                        <p>Sign up failed: {{ signup_result.message }} </p>
+                    </div>
+                </div>
                 <div class="container text-center">
-                    <button class="btn btn-primary" type="submit" ng-click="signUp(racer)">Sign Up</button>
-                    <button class="btn" ng-click="showCompetitionGroup(comp.uniname)">View Groups</button>
+                    <button class="btn btn-primary" type="submit" ng-click="signUp(racer)">提交 Submit</button>
+                    <button class="btn" ng-click="showCompetitionDetail(comp_uniname)">赛事详情 Detail</button>
                 </div>
             </div>
         </form>

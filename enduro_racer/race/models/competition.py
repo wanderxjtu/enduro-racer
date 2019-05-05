@@ -29,6 +29,8 @@ class CompStatus(Enum):
 class Serials(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=65535)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -36,9 +38,10 @@ class Serials(models.Model):
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
-    uniname = models.CharField(max_length=1024, unique=True)  # designed for url path, generated automatically
+    uniname = models.CharField(max_length=64, unique=True)  # designed for url path, generated automatically
     description = models.TextField(max_length=65535)
     groupSetting = models.CharField(max_length=255)  # csv format
+    manager = models.CharField(max_length=255)
     serialId = models.ForeignKey(Serials, on_delete=models.DO_NOTHING)
     startDate = models.DateField()
     endDate = models.DateField()
@@ -48,8 +51,12 @@ class Competition(models.Model):
     signUpStartDate = models.DateTimeField()
     signUpEndDate = models.DateTimeField()
     signUpFee = models.IntegerField()
+    maxRacerCount = models.IntegerField()
     CompetitionStatus = models.SmallIntegerField(choices=[(s.value, s) for s in CompStatus],
                                                  default=CompStatus.Pending.value)  # see CompStatus
+    resultConfig = models.TextField(max_length=65535)
+    gmt_created = models.DateTimeField(auto_now_add=True)
+    gmt_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.uniname

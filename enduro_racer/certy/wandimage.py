@@ -9,8 +9,9 @@ import qrcode.image.base
 class WandImage(qrcode.image.base.BaseImage):
     kind = "png"
 
-    def new_image(self, **kwargs):
-        img = Image(width=self.pixel_size, height=self.pixel_size, background=Color('white'))
+    def new_image(self, *, fill_color, back_color, **kwargs):
+        img = Image(width=self.pixel_size, height=self.pixel_size, background=Color(back_color))
+        img.font_color = Color(fill_color)
         return img
 
     def drawrect(self, row, col):

@@ -1,5 +1,5 @@
 # coding=utf-8
-"""
+""" 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -12,15 +12,25 @@
     See the License for the specific language governing permissions and
     limitations under the License.
    ------------------------------------------------------
-   File Name : ${NAME}
+   File Name : read_result_csv
    Author : jiaqi.hjq
 """
-from django.urls import path
-from django.views.decorators.cache import cache_page
+import os
+from collections import defaultdict
 
-from .views import ResultView
+from django.conf import settings
 
-urlpatterns = [
-    path('<str:competition_uniname>/', cache_page(15)(ResultView.as_view())),
-    path('<str:competition_uniname>/<str:game>/', cache_page(15)(ResultView.as_view())),
-]
+
+def read_result(name, game=None, *, keys, **conf):
+    basedir = settings.RESULT_BASE_PATH.format(name)
+
+    result = defaultdict(list)
+    filename = game or "result"
+    filepath = os.path.join(basedir, filename + ".csv")
+    with open(filepath) as f:
+        for line in f:
+            values = line.split(",")
+            group = values[0].strip()
+            data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
+            result[group].append(data)
+    return result

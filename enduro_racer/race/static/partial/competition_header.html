@@ -1,0 +1,13 @@
+<div class="container">
+    <div ng-show="comp === null" class="text-center container">
+        <i class="fa fa-spinner fa-spin fa-4x"></i>
+    </div>
+    <div class="col-12 col-md-8 offset-md-2 container" ng-if="comp !== null">
+        <div class="container text-center">
+            <h3 class="title"><span class="text-secondary">{{ comp.serialId__name }}</span>
+                <i class="fas fa-bicycle"></i>
+                <span class="text-dark">{{ comp.name }}</span>
+            </h3>
+        </div>
+    </div>
+</div>

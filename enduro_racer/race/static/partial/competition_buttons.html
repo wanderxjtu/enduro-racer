@@ -1,0 +1,10 @@
+<div ng-if="comp.signUpOpen">
+    <button class="mr-auto btn btn-primary" ng-click="showCompetitionSignup(comp.uniname)">
+        报名 SignUp
+    </button>
+    <button class="btn" ng-click="showCompetitionGroup(comp.uniname)">分组名单 Grouping
+    </button>
+</div>
+<div ng-if="!comp.signUpOpen">
+    <a ng-href="/result/{{ comp.uniname }}" class="btn btn-primary">实时成绩 Result</a>
+</div>

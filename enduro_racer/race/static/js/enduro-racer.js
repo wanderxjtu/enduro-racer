@@ -10,40 +10,38 @@ angular
     "ui.bootstrap",
     "ngRoute",
     "ngCookies",
-//    "ngMessageFormat",
-    "angular.filter"
+    "angular.filter",
+    "ngSanitize",
+    "ng-showdown"
   ])
   .config([
     "$routeProvider",
     function($routeProvider) {
       $routeProvider.when("/", {
         templateUrl: STATIC + "partial/competitions.html",
-        controller: "IndexCtrl"
+      });
+      $routeProvider.when("/openning", {
+        templateUrl: STATIC + "partial/competitions.html",
       });
 
       $routeProvider.when("/competition/:comp", {
         templateUrl: STATIC + "partial/competition.html",
-        controller: "CompetitionCtrl"
       });
 
       $routeProvider.when("/competition/:comp/groups", {
         templateUrl: STATIC + "partial/groups.html",
-        controller: "GroupsCtrl"
       });
 
       $routeProvider.when("/competition/:comp/signup", {
         templateUrl: STATIC + "partial/signup.html",
-        controller: "CompetitionSignupCtrl"
       });
 
       $routeProvider.when("/new_admin", {
         templateUrl: STATIC + "partial/new_admin.html",
-        controller: "NewAdminCtrl"
       });
 
       $routeProvider.when("/account", {
         templateUrl: STATIC + "partial/account.html",
-        controller: "AccountCtrl"
       });
 
       $routeProvider.otherwise({
@@ -76,6 +74,25 @@ angular
           };
         }
       ]);
+    }
+  ])
+  .config([
+    "$httpProvider",
+    function($httpProvider) {
+      $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+      $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }
+  ])
+  .config([
+    "$locationProvider",
+    function($locationProvider) {
+      $locationProvider.hashPrefix('');
+    }
+  ])
+  .config([
+    "$showdownProvider",
+    function($showdownProvider) {
+      $showdownProvider.setOption("parseImgDimensions", true);
     }
   ])
   .directive("ngSetFocus", [
@@ -111,9 +128,9 @@ angular
   .filter("genderFromInt", function() {
     return function(input) {
       if (input == 0) {
-        return "Female";
+        return "female";
       }
-      return "Male";
+      return "male";
     };
   })
   .filter("startFrom", function() {
@@ -202,10 +219,11 @@ angular
     "$http",
     "$location",
     "$cookies",
-    function($scope, $http, $location, $cookies) {
+    "$window",
+    function($scope, $http, $location, $cookies, $window) {
       $scope.$cookies = $cookies;
       $scope.competitions = null;
-      $scope.showOpen = true;
+      $scope.showOpen = $location.path();
       $scope.pageSize = 10;
       $scope.maxSize = 8;
       $scope.currentPage = 1;
@@ -215,9 +233,10 @@ angular
 
 
       $http
-        .get($scope.API + "competitions/", { params: { showOpen: $scope.showOpen} })
+        .get($scope.API + "competitions/", { params: { showOpen: $scope.showOpen.endsWith("openning")} })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
+          $window.document.title = "HIBP";
         },function(error) {
           console.error("Fetching competitions failed");
         });
@@ -238,7 +257,9 @@ angular
     "$http",
     "$route",
     "$cookies",
-    function($scope, $http, $route, $cookies) {
+    "$location",
+    "$window",
+    function($scope, $http, $route, $cookies, $location, $window) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
 
@@ -249,15 +270,21 @@ angular
       $http
         .get($scope.API + "competition/" + $scope.comp_uniname)
         .then(function(response) {
-          console.log(response.data)
           $scope.comp = response.data.object;
+          $window.document.title = $scope.comp.name;
         },function(error) {
           console.error("Fetching competition failed");
         });
 
+
       $scope.showCompetitionGroup = function(comp) {
-        console.log(comp)
         $location.path("/competition/" + comp + "/groups/");
+      };
+      $scope.showCompetitionSignup = function(comp) {
+        $location.path("/competition/" + comp + "/signup/");
+      };
+      $scope.showCompetitionDetail = function(comp) {
+        $location.path("/competition/" + comp);
       };
     }
   ])
@@ -267,8 +294,8 @@ angular
     "$route",
     "$cookies",
     "$window",
-    "$q",
-    function($scope, $http, $route, $cookies, $window, $q) {
+    "$location",
+    function($scope, $http, $route, $cookies, $window, $location) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp;
       $scope.allregions = $window.alpha3regions;
@@ -280,20 +307,21 @@ angular
 
       // need User -> RacerInfo
       // need teamList
-      $q.all([
-        $http.get($scope.API + "teams/"),
-        $http.get($scope.API + "competition/" + $scope.comp_uniname)
-        ]).then(function(response) {
-          $scope.teams = response[0].data.teams;
-          $scope.comp = response[1].data.object;
-      });
-      $scope.showCompetitionGroup = function(comp) {
-        $location.path("/competition/" + comp + "/groups/");
-      };
+      $http.get($scope.API + "teams/")
+      .then(function(response) {
+          $scope.teams = response.data.teams;
+      },function(error) {
+          console.error("Fetching competition failed");
+      });;
 
-      $scope.signUp= function(racer) {
-        console.log(racer);
-//        $location.path("/competition/" + comp + "/groups/");
+      $scope.signUp = function(racer) {
+        $http.post($scope.API + "competition/" + $scope.comp_uniname + "/signup/", racer)
+        .then(function(response) {
+          $scope.signup_result = response.data.object;
+        },function(error) {
+          $scope.signup_result = {"success": false, "message": "提交失败，请再试一次"}
+          console.error("Signup Error");
+        });
       };
     }
   ])
@@ -302,9 +330,11 @@ angular
     "$http",
     "$route",
     "$cookies",
-    function($scope, $http, $route, $cookies) {
+    "$window",
+    function($scope, $http, $route, $cookies, $window) {
       $scope.$cookies = $cookies;
       $scope.comp_uniname = $route.current.params.comp
+      $scope.regionsemoji = $window.alpha3emoji;
 
       if (NEED_ADMIN) {
         $location.path("/new_admin");

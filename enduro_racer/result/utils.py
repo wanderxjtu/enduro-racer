@@ -1,5 +1,5 @@
 # coding=utf-8
-"""
+""" 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -12,15 +12,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
    ------------------------------------------------------
-   File Name : ${NAME}
+   File Name : utils
    Author : jiaqi.hjq
 """
-from django.urls import path
-from django.views.decorators.cache import cache_page
+import json
 
-from .views import ResultView
+from race.models.competition import Competition
 
-urlpatterns = [
-    path('<str:competition_uniname>/', cache_page(15)(ResultView.as_view())),
-    path('<str:competition_uniname>/<str:game>/', cache_page(15)(ResultView.as_view())),
-]
+
+def read_config(compname):
+    config = Competition.objects.values_list("resultConfig", flat=True).get(uniname=compname)
+    return json.loads(config)

@@ -1,14 +1,17 @@
-from collections import defaultdict
-from functools import partial
+import json
+import logging
+import traceback
 
-from django.shortcuts import render
+LOGGER = logging.getLogger(__name__)
 
 # Create your views here.
+from django.core.handlers import exception
 from django.views.generic import TemplateView
 
-RACE_NAME = {
-    "sy0324": "2019中国绍兴上虞祝家庄国际单车速降赛"
-}
+from certy.certgen import CertGen
+from race.models.competition import Competition
+from result.read_result_csv import read_result
+from result.utils import read_config
 
 
 class ResultView(TemplateView):
@@ -16,23 +19,33 @@ class ResultView(TemplateView):
 
     def get_context_data(self, **kwargs):
         compname = self.kwargs['competition_uniname']
-        return {"compname": RACE_NAME.get(compname, "比赛"),
-                "cert_prefix": "/certs/{}".format(compname),
-                "result": self._read_result(compname)}
+        game = self.kwargs.get('game', None)
 
-    def _read_result(self, name):
-        filepath = "/home/admin/%s/result.csv"
-        keys = ["rank", "no", "name", "team", "start", "end", "certfilename", "result", "diff", "points"]
-        result = defaultdict(list)
-        with open(filepath) as f:
-            for line in f:
-                values = line.split(",")
-                group = values[0].strip()
-                result[group].append(dict(zip(keys, map(lambda s: s.strip("-"),
-                                                        map(str.strip, values[1:])))))
+        try:
+            comp_obj = Competition.objects.values_list("name", "resultConfig",
+                                                       named=True).get(uniname=compname)
+            conf = json.loads(comp_obj.resultConfig)
+            raw_result = read_result(compname, game, **conf)
+            headers, result = self._render_format(compname, raw_result, **conf)
 
-        for riderlist in result.values():
-            riderlist.sort(key=lambda x: x["no"])
-            riderlist.sort(key=lambda x: x["result"] or "99:99:99.999")
+            return {"comp_full_name": comp_obj.name,
+                    "result": result,
+                    "headers": headers}
+        except Exception:
+            LOGGER.error(traceback.format_exc())
+            raise exception.Http404()
 
-        return dict(result)
+    def _render_format(self, name, result, *, th, td, **conf):
+        def _dict_formatter(d: dict, formats):
+            cert_filename = d.get("certfilename") or CertGen(name, conf["certy"]).get_cert_filename(d["rank"],
+                                                                                                    d["name"])
+            cert_link = "/certs/{}/{}".format(name, cert_filename) if d["rank"] else ""
+            # for now we can control the contents
+            # d2 = {k: escape(v) for k, v in d.items()}
+            return map(lambda x: x.format(**d, cert_link=cert_link), formats)
+
+        cls = conf["class"]
+        headers = zip(cls, th)
+        for group, l in result.items():
+            result[group] = (zip(cls, _dict_formatter(data, td)) for data in l)
+        return list(headers), dict(result)
