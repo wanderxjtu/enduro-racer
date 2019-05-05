@@ -20,7 +20,7 @@ angular
       $routeProvider.when("/", {
         templateUrl: STATIC + "partial/competitions.html",
       });
-      $routeProvider.when("/all", {
+      $routeProvider.when("/openning", {
         templateUrl: STATIC + "partial/competitions.html",
       });
 
@@ -233,7 +233,7 @@ angular
 
 
       $http
-        .get($scope.API + "competitions/", { params: { showOpen: !$scope.showOpen.endsWith("all")} })
+        .get($scope.API + "competitions/", { params: { showOpen: $scope.showOpen.endsWith("openning")} })
         .then(function(response) {
           $scope.competitions = response.data.competitions;
           $window.document.title = "HIBP";
