@@ -20,6 +20,10 @@ import certy.urls
 import race.urls
 import result.urls
 
+admin.site.site_header = "HIBP Admin"
+admin.site.site_title = "HIBP Admin Portal"
+admin.site.index_title = "Welcome to HIBP Admin Portal"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('race/', include(race.urls.urlpatterns)),
