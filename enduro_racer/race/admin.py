@@ -18,8 +18,10 @@
 import csv
 
 from django.contrib import admin
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import path
+from django.utils.html import format_html
 
 from race.models.competition import Competition, Serials
 from race.models.racer import RacerInfo, RacerLog, RacerResults, Team
@@ -30,6 +32,27 @@ from race.models.config import Config
 class RacerInfoAdmin(admin.ModelAdmin):
     list_display = ("realName", "gender", "birthday")
     search_fields = ("realName",)
+
+
+class CompetitionAdmin(admin.ModelAdmin):
+    list_display = ("uniname", "name", "signUpOpen", "serialId", "racers_info")
+
+    def racers_info(self, obj):
+        return format_html('<a href="export-racer/{0}/">{0}.csv</a>'.format(obj.uniname))
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('export-racer/<str:competition_uniname>', self.export_csv),
+        ]
+        return my_urls + urls
+
+    def export_csv(self, request, competition_uniname, extra_context=None):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(competition_uniname)
+        writer = csv.writer(response)
+        #TODO: write
+        return response
 
 
 class RacerLogAdmin(admin.ModelAdmin):
@@ -60,7 +83,7 @@ class RacerLogAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(Competition)
+admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Serials)
 admin.site.register(RacerInfo, RacerInfoAdmin)
 admin.site.register(RacerLog, RacerLogAdmin)
