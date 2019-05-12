@@ -2,12 +2,9 @@
 {% block object-tools %}
 <div>
     <form action="import-csv/" method="POST" enctype="multipart/form-data">
-        <p>
-            <label for="id_csv_file">Import Racers From csv 导入csv</label>
-            <input type="file" name="csv_file" required="" id="id_csv_file">
-        </p>
+        <input type="file" name="csv_file" required="" id="id_csv_file">
         {% csrf_token %}
-        <button type="submit">Upload CSV</button>
+        <button type="submit" class="button">导入 csv 文件</button>
     </form>
 </div>
 <br/>

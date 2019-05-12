@@ -35,6 +35,7 @@ class RacerInfoAdmin(admin.ModelAdmin):
 class RacerLogAdmin(admin.ModelAdmin):
     list_display = ("racerId", "teamId", "group", "competitionId")
     list_filter = ("competitionId", "group")
+    readonly_fields = ("competitionId", "racerId")
     search_fields = ("racerId",)
     change_list_template = "racerlog_changelist.html"
 
