@@ -1,13 +1,16 @@
 .navbar-brand {
+  position: absolute;
   background: url(/static/images/hbike_logo.png) center / contain no-repeat;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
+  top: 8px;
   left: 50%;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 
 .navbar {
-  min-height: 55px;
+  min-height: 48px;
+  background-color: #eeeeee;
 }
 
 .hibp-card {
@@ -19,7 +22,7 @@
   background-color: #fef303;
   transform: translateX(-50%);
   left: 50%;
-  height: 150px;
+  height: 80px;
 }
 
 input.ng-invalid.ng-touched {

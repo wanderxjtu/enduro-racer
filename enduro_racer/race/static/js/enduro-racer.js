@@ -210,7 +210,7 @@ angular
   .controller("NavbarCtrl", [
     "$scope",
     function($scope) {
-      $scope.navCollapsed = true; //$scope.device === "xs";
+      $scope.navCollapsed = $scope.device === "xs";
       $scope.options = [];
     }
   ])
