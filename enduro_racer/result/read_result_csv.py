@@ -16,21 +16,99 @@
    Author : jiaqi.hjq
 """
 import os
-from collections import defaultdict
+from datetime import datetime, timedelta
+from collections import defaultdict, OrderedDict
 
 from django.conf import settings
 
 
-def read_result(name, game=None, *, keys, **conf):
-    basedir = settings.RESULT_BASE_PATH.format(name)
+class CsvResultReader(object):
+    @staticmethod
+    def read_result(name, game=None, *, keys, **conf):
+        basedir = settings.RESULT_BASE_PATH.format(name)
 
-    result = defaultdict(list)
-    filename = game or "result"
-    filepath = os.path.join(basedir, filename + ".csv")
-    with open(filepath) as f:
-        for line in f:
-            values = line.split(",")
-            group = values[0].strip()
-            data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
-            result[group].append(data)
-    return result
+        result = defaultdict(list)
+        filename = game or "result"
+        filepath = os.path.join(basedir, filename + ".csv")
+        with open(filepath) as f:
+            for line in f:
+                values = line.split(",")
+                group = values[0].strip()
+                data = dict(zip(keys, map(lambda s: s.strip("-"), map(str.strip, values[1:]))))
+                result[group].append(data)
+        return result
+
+
+def load_hibp_dev_file(fpath):
+    """
+    Only read first effective data, ignore laters with same tag
+    :param fpath:
+    :return:
+    """
+    ret = dict()
+    try:
+        with open(fpath) as f:
+            for line in f:
+                if line.startswith('HIBP:'):
+                    _, num, sec, ms = line.split('    ')  # four spaces
+                    if num not in ret:
+                        ret[num] = int(sec + ms)
+    finally:
+        return ret
+
+
+class BBRawResultReader(object):
+    """
+    self.result = {"group": {no: result_ms, no_2: result_ms_2, ...}, group2_dict}
+    """
+
+    def __init__(self):
+        self.result = OrderedDict()  # groups should be ordered
+
+    def _get_raw_file_paires(self, name):
+        basedir = settings.RESULT_BASE_PATH.format(name)
+        ret = dict()
+        for fn in os.listdir(basedir):
+            if fn.startswith("end.txt"):
+                _, postfix = fn.split(".txt", maxsplit=1)
+                # it's ok to have ret['']
+                ret[postfix] = (os.path.join(basedir, "start.txt" + postfix),
+                                os.path.join(basedir, "end.txt" + postfix))
+        return ret
+
+    def _ms_to_tstr(self, msecs: int):
+        secs, ms = divmod(msecs, 1000)
+        return datetime.fromtimestamp(secs).strftime("%H:%M:%S") + ".{:03}".format(ms)
+
+    def read_bb_raw_result(self, name, *args, **kwargs):
+        """
+        raw files should have info of (no group)
+        HIBP:   no  ts_sec  ts_ms
+        for balance bike
+        all start at same time in one group
+        result = first end ts - start ts
+        skip numberplate that already in result[group]
+        """
+        for postfix, fs in self._get_raw_file_paires(name).items():
+            if postfix != '' and postfix in self.result:
+                # JUST READ ONCE for those already have result
+                continue
+            startts, endts = map(load_hibp_dev_file, fs)
+
+            if '000' not in startts:
+                continue
+            start = startts['000']
+            starttime = self._ms_to_tstr(start)
+            self.result[postfix] = list()
+            rank_gen = iter(range(1, len(endts) + 1))
+            first = True
+            for num, end in sorted(endts.items(), key=lambda x: x[1]):
+                result = endts[num] - start
+                if first:
+                    first = False
+                    first_result = result
+                self.result[postfix].append({"rank": str(next(rank_gen)), "no": num, "start": starttime,
+                                             "end": self._ms_to_tstr(endts[num]),
+                                             "result": self._ms_to_tstr(result),
+                                             "diff": self._ms_to_tstr(result - first_result)})
+        return self.result.copy()

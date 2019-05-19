@@ -8,6 +8,45 @@
     <meta http-equiv="refresh" content="10">
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/race.css">
+    <style>
+.navbar {
+  min-height: 55px;
+  background-color: #050505;
+  color: #aaaaaa;
+}
+.tab {
+  overflow: hidden;
+<!--  border: 1px solid #ccc;-->
+<!--  background-color: #f1f1f1;-->
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+}
+
+    </style>
     <title>{{ comp_full_name }} 实时成绩</title>
 </head>
 <body>
@@ -29,37 +68,67 @@
 </div>
 {% endif %}
 
+<div class="tab nav justify-content-center">
+    {% for groupname in result %}
+    <button class="tablinks" onclick="openGroup(event, 'G{{ groupname }}')">RACE {{ groupname }}</button>
+    {% endfor %}
+</div>
 
 <div class="col-12 col-lg-10 offset-lg-1 mt-2">
     {% for groupname, riders in result.items %}
-    <h2 class="container">{{ groupname }}</h2>
-    <table class="table table-hover table-striped">
-        <thead class="thead-dark text-nowrap">
-        <tr>
-            {% autoescape off %}
-            {% for cls, hdr in headers %}
-            <th class="{{ cls }}">{{ hdr }}</th>
+    <div id="G{{ groupname }}" class="tabcontent">
+<!--        <h2 class="container">G{{ groupname }}</h2>-->
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark text-nowrap">
+            <tr>
+                {% autoescape off %}
+                {% for cls, hdr in headers %}
+                <th class="{{ cls }}">{{ hdr }}</th>
+                {% endfor %}
+                {% endautoescape %}
+            </tr>
+            </thead>
+            <tbody class="text-nowrap">
+            {% for rider in riders %}
+            <tr>
+                {% autoescape off %}
+                {% for cls, cnt in rider %}
+                <td class="{{ cls }}">{{ cnt|default:"n/a" }}</td>
+                {% endfor %}
+                {% endautoescape %}
+            </tr>
             {% endfor %}
-            {% endautoescape %}
-        </tr>
-        </thead>
-        <tbody class="text-nowrap">
-        {% for rider in riders %}
-        <tr>
-            {% autoescape off %}
-            {% for cls, cnt in rider %}
-            <td class="{{ cls }}">{{ cnt|default:"n/a" }}</td>
-            {% endfor %}
-            {% endautoescape %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     {% endfor %}
 </div>
 <footer class="mt-4">
     <div class="hibp-footer col-12 pl-0 pr-0"></div>
 </footer>
+<script type="text/javascript" charset="utf-8">
+function openGroup(evt, groupName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace("active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(groupName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+document.getElementsByClassName('tablinks')[0].click();
+
+</script>
 </body>
 
 </html>
