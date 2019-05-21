@@ -24,9 +24,7 @@ from django.urls import path
 from django.utils.html import format_html
 
 from race.models.competition import Competition, Serials
-from race.models.racer import RacerInfo, RacerLog, RacerResults, Team
-from race.models.user import User, Oauth
-from race.models.config import Config
+from race.models.racer import RacerInfo, RacerLog, Team
 
 
 class RacerInfoAdmin(admin.ModelAdmin):
@@ -87,7 +85,6 @@ admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Serials)
 admin.site.register(RacerInfo, RacerInfoAdmin)
 admin.site.register(RacerLog, RacerLogAdmin)
-admin.site.register(RacerResults)
 admin.site.register(Team)
 admin.site.register(User)
 admin.site.register(Oauth)

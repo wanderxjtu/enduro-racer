@@ -88,15 +88,3 @@ class RacerLog(models.Model):
 
     def __str__(self):
         return self.competitionId.uniname + "," + str(self.racerTag) + "," + self.racerId.realName
-
-
-class RacerResults(models.Model):
-    # One competition may have multiple result records,
-    # such as Qualifying, or Whip, or multiple stages like EWS
-    racerLogId = models.ForeignKey(RacerLog, on_delete=models.DO_NOTHING)
-    launchTime = models.DateTimeField()
-    finishTime = models.DateTimeField()
-    punishment = models.IntegerField()  # seconds, -(negative) for reward
-
-    def __str__(self):
-        return self.racerLogId.racerId.realName
