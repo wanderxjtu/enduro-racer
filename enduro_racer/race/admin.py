@@ -49,7 +49,7 @@ class CompetitionAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(competition_uniname)
         writer = csv.writer(response)
-        #TODO: write
+        # TODO: write
         return response
 
 
@@ -86,6 +86,3 @@ admin.site.register(Serials)
 admin.site.register(RacerInfo, RacerInfoAdmin)
 admin.site.register(RacerLog, RacerLogAdmin)
 admin.site.register(Team)
-admin.site.register(User)
-admin.site.register(Oauth)
-admin.site.register(Config)
