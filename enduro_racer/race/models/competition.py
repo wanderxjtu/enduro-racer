@@ -24,6 +24,8 @@ class CompStatus(Enum):
     Pending = 0  # 即将开始报名
     Signing = 1  # 报名中
     StopSign = 2  # 停止自助报名
+    Racing = 3  # 比赛中
+    Finished = 4  # 比赛结束
 
 
 class Serials(models.Model):

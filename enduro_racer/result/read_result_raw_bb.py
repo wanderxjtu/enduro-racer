@@ -95,6 +95,8 @@ class BBRawResultReader(object):
         all start at same time in one group
         result = first end ts - start ts
         skip numberplate that already in result[group]
+
+        Should check if current name's Competition is on racing status
         """
         loaded_postfixes = loaded_postfixes or list()
         result = OrderedDict()
