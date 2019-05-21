@@ -20,5 +20,5 @@ class RacerResults(models.Model):
     racerTag = models.CharField(max_length=16, null=True, blank=True)  # number plate
     launchTime = models.DateTimeField()
     finishTime = models.DateTimeField()
-    realResult = models.TimeField()
+    realResult = models.DateTimeField()
     punishment = models.IntegerField()  # seconds, -(negative) for reward

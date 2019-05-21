@@ -14,7 +14,8 @@ from django.views.generic import TemplateView
 
 from certy.certgen import CertGen
 from race.models.competition import Competition
-from result.read_result_csv import CsvResultReader, BBRawResultReader
+from result.read_result_csv import CsvResultReader
+from result.read_result_raw_bb import BBRawResultReader
 
 
 class ResultView(TemplateView):
@@ -58,6 +59,17 @@ class ResultView(TemplateView):
 
 
 class BBResultView(ResultView):
+    """
+1. start.txt.* end.txt.* 后缀全局唯一。
+2. result页面查询comp当前状态为未开始，点击开始跳转admin/comp_list，点击对应开始后，修改其它comp.status == starting -> finished, 修改本comp.status->starting。
+3. result页面查询comp当前状态为starting，
+  - 不带后缀的只读取不入库不备份，视为实时成绩。（最后一轮时需要计时器操作重置确认，否则成绩无法入库）
+  - 扫描成绩，跳过库内已有后缀，读取成功一次入库，入库必须带后缀，号牌标签，带start时间，带有效成绩，不带comp
+  - 扫描成功的带后缀成绩单**备份**处理，移动为 bak_start.txt.* bak_end.txt.*。
+  - 读取成绩单表 关联的本赛事成绩单。
+4. 增加 成绩单 表： 后缀(单子id)，赛事，显示名，config
+5. admin页面允许调整成绩单 表关联的赛事和显示名。
+    """
     @lru_cache(maxsize=10)
     def get_racer_logs(self):
         ret = dict()
@@ -75,7 +87,7 @@ class BBResultView(ResultView):
 
     def get_result(self, compname, game, **conf):
         racer_infos = self.get_racer_logs()
-        raw_result = self.result_reader.read_bb_raw_result(compname)
+        raw_result = self.result_reader.read_result(compname)
         for l in raw_result.values():
             for d in l:
                 # query racerinfo then insert back to result dict
