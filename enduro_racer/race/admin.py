@@ -123,7 +123,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class RacerLogAdmin(admin.ModelAdmin):
-    list_display = ("racerId", "teamId", "group", "competitionId")
+    list_display = ("racerId", "racerTag", "teamId", "group", "competitionId")
     list_filter = ("competitionId", "group")
     readonly_fields = ("competitionId", "racerId")
     search_fields = ("racerId",)
