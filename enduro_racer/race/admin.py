@@ -33,14 +33,15 @@ class RacerInfoAdmin(admin.ModelAdmin):
 
 class CompetitionAdmin(admin.ModelAdmin):
     list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "racers_info")
-    actions = ("MakeOngoing",)
+    actions = ("make_ongoing",)
 
-    def MakeOngoing(self, request, queryset):
+    def make_ongoing(self, request, queryset):
         obj = queryset[0]
         try:
             Config.objects.filter(key="LoadingCompetition").update(value=obj.uniname)
         except:
             Config(key="LoadingCompetition", value=obj.uniname).save()
+    make_ongoing.short_description = "设置为比赛中"
 
     def racers_info(self, obj):
         return format_html('<a href="export-racer/{0}/">{0}.csv</a>'.format(obj.uniname))
