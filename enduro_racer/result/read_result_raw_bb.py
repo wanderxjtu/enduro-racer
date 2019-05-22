@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 
+from race.models import Config
 from race.models.competition import Competition
 from result.models import ResultsMeta, RacerResults
 from result.read_result_csv import load_hibp_dev_file, LOG
@@ -101,6 +102,9 @@ class BBRawResultReader(object):
         loaded_postfixes = loaded_postfixes or list()
         result = OrderedDict()
         for postfix, fs in self._get_raw_file_paires(name).items():
+            if Config.objects.get(key="LoadingCompetition").value != name:
+                # precheck current competition
+                break
             if postfix != '' and postfix in loaded_postfixes:
                 # JUST READ ONCE for those already have result
                 continue
