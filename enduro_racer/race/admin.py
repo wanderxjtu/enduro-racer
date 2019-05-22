@@ -23,8 +23,7 @@ from django.shortcuts import redirect
 from django.urls import path
 from django.utils.html import format_html
 
-from race.models.competition import Competition, Serials
-from race.models.racer import RacerInfo, RacerLog, Team
+from race.models import Competition, Serials, RacerInfo, RacerLog, Team, Config
 
 
 class RacerInfoAdmin(admin.ModelAdmin):
@@ -80,9 +79,18 @@ class RacerLogAdmin(admin.ModelAdmin):
             return redirect("..")
 
 
+class ConfigAdmin(admin.ModelAdmin):
+    list_display = ("key", "value")
+    readonly_fields = ("key",)
+
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ("name", "leaderName")
+
+
 # Register your models here.
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Serials)
 admin.site.register(RacerInfo, RacerInfoAdmin)
 admin.site.register(RacerLog, RacerLogAdmin)
-admin.site.register(Team)
+admin.site.register(Team, TeamAdmin)
+admin.site.register(Config, ConfigAdmin)
