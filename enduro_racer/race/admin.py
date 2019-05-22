@@ -32,10 +32,23 @@ class RacerInfoAdmin(admin.ModelAdmin):
 
 
 class CompetitionAdmin(admin.ModelAdmin):
-    list_display = ("uniname", "name", "signUpOpen", "serialId", "racers_info")
+    list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "racers_info")
+    actions = ("MakeOngoing",)
+
+    def MakeOngoing(self, request, queryset):
+        obj = queryset[0]
+        try:
+            Config.objects.filter(key="LoadingCompetition").update(value=obj.uniname)
+        except:
+            Config(key="LoadingCompetition", value=obj.uniname).save()
 
     def racers_info(self, obj):
         return format_html('<a href="export-racer/{0}/">{0}.csv</a>'.format(obj.uniname))
+
+    def ongoing(self, obj):
+        if obj.uniname == Config.objects.get(key="LoadingCompetition").value:
+            return "比赛中"
+        return ""
 
     def get_urls(self):
         urls = super().get_urls()
@@ -82,6 +95,7 @@ class RacerLogAdmin(admin.ModelAdmin):
 class ConfigAdmin(admin.ModelAdmin):
     list_display = ("key", "value")
     readonly_fields = ("key",)
+
 
 class TeamAdmin(admin.ModelAdmin):
     list_display = ("name", "leaderName")
