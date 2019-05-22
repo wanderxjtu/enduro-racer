@@ -19,7 +19,7 @@ import csv
 
 from django.contrib import admin
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import path
 from django.utils.html import format_html
 
@@ -32,7 +32,7 @@ class RacerInfoAdmin(admin.ModelAdmin):
 
 
 class CompetitionAdmin(admin.ModelAdmin):
-    list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "racers_info")
+    list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "import_racers", "racers_info")
     actions = ("make_ongoing",)
 
     def make_ongoing(self, request, queryset):
@@ -41,10 +41,18 @@ class CompetitionAdmin(admin.ModelAdmin):
             Config.objects.filter(key="LoadingCompetition").update(value=obj.uniname)
         except:
             Config(key="LoadingCompetition", value=obj.uniname).save()
+
     make_ongoing.short_description = "设置为比赛中"
 
+    def import_racers(self, obj):
+        return format_html('<a href="{0.id}/import-racers/">导入参赛名单</a>'.format(obj))
+
+    import_racers.short_description = "导入"
+
     def racers_info(self, obj):
-        return format_html('<a href="export-racer/{0}/">{0}.csv</a>'.format(obj.uniname))
+        return format_html('<a href="{0.uniname}/export-racers/">{0.uniname}.csv</a>'.format(obj))
+
+    racers_info.short_description = "导出"
 
     def ongoing(self, obj):
         if obj.uniname == Config.objects.get(key="LoadingCompetition").value:
@@ -54,16 +62,30 @@ class CompetitionAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('export-racer/<str:competition_uniname>', self.export_csv),
+            path('<path:object_uniname>/export-racers/', self.export_csv),
+            path('<path:object_id>/import-racers/', self.import_csv)
         ]
         return my_urls + urls
 
-    def export_csv(self, request, competition_uniname, extra_context=None):
+    def export_csv(self, request, object_uniname, extra_context=None):
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(competition_uniname)
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(object_uniname)
         writer = csv.writer(response)
         # TODO: write
         return response
+
+    def import_csv(self, request, object_id, *args, **kwargs):
+        if request.method == "POST":
+            csv_file = request.FILES["csv_file"]
+            reader = csv.reader(csv_file)
+            for row in reader:
+                # TODO: parsing Racer Signup Info csv file
+                # TODO: comp_uniname, realName, gender, birthday, teamName, group?
+                pass
+
+            self.message_user(request, "Your csv file has been imported")
+            return redirect("../../")
+        return render(request, "csv_import.html", {"title": "导入参赛名单", "site_header": self.admin_site.site_header})
 
 
 class RacerLogAdmin(admin.ModelAdmin):
@@ -71,26 +93,6 @@ class RacerLogAdmin(admin.ModelAdmin):
     list_filter = ("competitionId", "group")
     readonly_fields = ("competitionId", "racerId")
     search_fields = ("racerId",)
-    change_list_template = "racerlog_changelist.html"
-
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [
-            path('import-csv/', self.import_csv),
-        ]
-        return my_urls + urls
-
-    def import_csv(self, request):
-        if request.method == "POST":
-            csv_file = request.FILES["csv_file"]
-            reader = csv.reader(csv_file)
-            for row in reader:
-                # TODO: parsing Racer Signup Info csv file
-                # TODO: realName, gender, birthday, competitionName, teamName, group?
-                pass
-
-            self.message_user(request, "Your csv file has been imported")
-            return redirect("..")
 
 
 class ConfigAdmin(admin.ModelAdmin):

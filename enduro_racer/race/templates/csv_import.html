@@ -1,12 +1,10 @@
-{% extends 'admin/change_list.html' %}
-{% block object-tools %}
+{% extends 'admin/base_site.html' %}
+{% block content %}
 <div>
-    <form action="import-csv/" method="POST" enctype="multipart/form-data">
+    <form action="." method="POST" enctype="multipart/form-data">
         <input type="file" name="csv_file" required="" id="id_csv_file">
         {% csrf_token %}
         <button type="submit" class="button">导入 csv 文件</button>
     </form>
 </div>
-<br/>
-{{ block.super }}
 {% endblock %}
