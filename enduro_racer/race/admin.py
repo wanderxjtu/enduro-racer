@@ -16,8 +16,10 @@
    Author : jiaqi.hjq
 """
 import csv
+import traceback
+from datetime import datetime
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path
@@ -34,6 +36,8 @@ class RacerInfoAdmin(admin.ModelAdmin):
 class CompetitionAdmin(admin.ModelAdmin):
     list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "import_racers", "racers_info")
     actions = ("make_ongoing",)
+
+    import_keys = ("racerTag", "realName", "gender", "idNumber", "teamName", "group", "birthday")
 
     def make_ongoing(self, request, queryset):
         obj = queryset[0]
@@ -77,14 +81,44 @@ class CompetitionAdmin(admin.ModelAdmin):
     def import_csv(self, request, object_id, *args, **kwargs):
         if request.method == "POST":
             csv_file = request.FILES["csv_file"]
-            reader = csv.reader(csv_file)
-            for row in reader:
-                # TODO: parsing Racer Signup Info csv file
-                # TODO: comp_uniname, realName, gender, birthday, teamName, group?
-                pass
+            try:
+                reader = csv.reader(line.decode('utf-8') for line in csv_file.open())
+                for row in reader:
+                    obj_dict = dict(zip(self.import_keys, row))
+                    print(obj_dict)
+                    comp_obj = Competition.objects.get(id=object_id)
+                    try:
+                        racer_obj = RacerInfo.objects.get(idNumber=obj_dict["idNumber"], realName=obj_dict["realName"])
+                    except:
+                        gender = int(obj_dict["gender"].lower() in ("male", "man", "男"))
+                        racer_obj = RacerInfo(idNumber=obj_dict["idNumber"], realName=obj_dict["realName"],
+                                              gender=gender, birthday=obj_dict.get("birthday", "1970-01-01"))
+                        racer_obj.save()
 
-            self.message_user(request, "Your csv file has been imported")
-            return redirect("../../")
+                    try:
+                        team_obj = Team.objects.get(name=obj_dict["teamName"])
+                    except:
+                        team_obj = Team(name=obj_dict['teamName'])
+                        team_obj.save()
+
+                    try:
+                        rlog_obj = RacerLog.objects.get(competitionId=comp_obj, racerId=racer_obj)
+                    except:
+                        rlog_obj = RacerLog(competitionId=comp_obj, racerId=racer_obj)
+
+                    rlog_obj.racerTag = obj_dict["racerTag"]
+                    rlog_obj.teamId = team_obj
+                    rlog_obj.group = obj_dict["group"]
+                    rlog_obj.save()
+
+                self.message_user(request, "Your csv file has been imported")
+                return redirect("../../")
+            except Exception as e:
+                print(traceback.format_exc())
+                self.message_user(request, "Your csv file import error: {}".format(e), level=messages.ERROR)
+                # return redirect(".")
+            finally:
+                csv_file.close()
         return render(request, "csv_import.html", {"title": "导入参赛名单", "site_header": self.admin_site.site_header})
 
 
