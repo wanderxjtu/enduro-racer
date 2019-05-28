@@ -61,7 +61,7 @@ class RacerInfo(models.Model):
     region = models.CharField(max_length=4, default="CHN")  # iso code, default
     idType = models.SmallIntegerField(choices=[(s.value, s) for s in IdType],
                                       default=IdType.Identity.value)
-    idNumber = models.CharField(max_length=255, unique=True)  # id number or passport number
+    idNumber = models.CharField(max_length=255)  # id number or passport number
     phoneNumber = models.CharField(max_length=32)
 
     ecpName = models.CharField(max_length=255, null=True, blank=True)  # emergency contact person
