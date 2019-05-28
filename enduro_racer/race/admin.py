@@ -105,16 +105,14 @@ class CompetitionAdmin(admin.ModelAdmin):
                         racer_obj.save()
                     rlog_obj.racerId = racer_obj
 
+                    team_name = obj_dict.get("teamName", "")
                     try:
-                        team_obj = Team.objects.get(name=obj_dict["teamName"])
-                        rlog_obj.teamId = team_obj
-                    except KeyError:
-                        pass
+                        team_obj = Team.objects.get(name=team_name)
                     except Exception:
-                        team_obj = Team(name=obj_dict['teamName'])
+                        team_obj = Team(name=team_name)
                         team_obj.save()
-                        rlog_obj.teamId = team_obj
 
+                    rlog_obj.teamId = team_obj
                     rlog_obj.save()
 
                 self.message_user(request, "Your csv file has been imported")
