@@ -37,7 +37,7 @@ class CompetitionAdmin(admin.ModelAdmin):
     list_display = ("uniname", "name", "signUpOpen", "serialId", "ongoing", "import_racers", "racers_info")
     actions = ("make_ongoing",)
 
-    import_keys = ("racerTag", "realName", "gender", "idNumber", "teamName", "group", "birthday")
+    import_keys = ("racerTag", "group", "realName", "gender", "age", "parentName", "teamName")
 
     def make_ongoing(self, request, queryset):
         obj = queryset[0]
@@ -85,30 +85,36 @@ class CompetitionAdmin(admin.ModelAdmin):
                 reader = csv.reader(line.decode('utf-8') for line in csv_file.open())
                 for row in reader:
                     obj_dict = dict(zip(self.import_keys, row))
-                    print(obj_dict)
                     comp_obj = Competition.objects.get(id=object_id)
                     try:
-                        racer_obj = RacerInfo.objects.get(idNumber=obj_dict["idNumber"], realName=obj_dict["realName"])
+                        rlog_obj = RacerLog.objects.get(competitionId=comp_obj, racerTag=obj_dict["racerTag"])
                     except:
-                        gender = int(obj_dict["gender"].lower() in ("male", "man", "男"))
-                        racer_obj = RacerInfo(idNumber=obj_dict["idNumber"], realName=obj_dict["realName"],
-                                              gender=gender, birthday=obj_dict.get("birthday", "1970-01-01"))
+                        rlog_obj = RacerLog(competitionId=comp_obj, racerTag=obj_dict["racerTag"])
+
+                    rlog_obj.group = obj_dict["group"]
+
+                    gender = int(obj_dict["gender"].lower() in ("male", "man", "男"))
+                    try:
+                        racer_obj = RacerInfo.objects.get(realName=obj_dict["realName"], gender=obj_dict["gender"],
+                                                          ecpName=obj_dict["parentName"])
+                    except:
+                        today = datetime.today()
+                        racer_obj = RacerInfo(realName=obj_dict["realName"], gender=gender,
+                                              birthday=today.replace(year=today.year - int(obj_dict["age"]))
+                                              )
                         racer_obj.save()
+                    rlog_obj.racerId = racer_obj
 
                     try:
                         team_obj = Team.objects.get(name=obj_dict["teamName"])
-                    except:
+                        rlog_obj.teamId = team_obj
+                    except KeyError:
+                        pass
+                    except Exception:
                         team_obj = Team(name=obj_dict['teamName'])
                         team_obj.save()
+                        rlog_obj.teamId = team_obj
 
-                    try:
-                        rlog_obj = RacerLog.objects.get(competitionId=comp_obj, racerId=racer_obj)
-                    except:
-                        rlog_obj = RacerLog(competitionId=comp_obj, racerId=racer_obj)
-
-                    rlog_obj.racerTag = obj_dict["racerTag"]
-                    rlog_obj.teamId = team_obj
-                    rlog_obj.group = obj_dict["group"]
                     rlog_obj.save()
 
                 self.message_user(request, "Your csv file has been imported")
