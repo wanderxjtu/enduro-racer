@@ -92,5 +92,5 @@ class BBResultView(ResultView):
             for d in l:
                 # query racerinfo then insert back to result dict
                 # name/team
-                d.update(racer_infos.get(d['no'], {'name': "UNKNOWN", 'team': "NOTEAM"}))
+                d.update(racer_infos.get(d['no'], {'name': "UNKNOWN", 'team': ""}))
         return raw_result
