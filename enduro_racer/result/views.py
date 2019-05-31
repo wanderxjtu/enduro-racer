@@ -43,13 +43,25 @@ class ResultView(TemplateView):
             raise exception.Http404()
 
     def _render_format(self, name, result, *, th, td, **conf):
+        try:
+            _certgen = CertGen(name, conf["certy"])
+        except Exception as e:
+            LOGGER.error("init certgen object error: ", e)
+            _certgen = None
+
+        def _get_cert_link(d: dict):
+            if not d.get("rank"):
+                return ""
+            elif d.get("certfilename") or _certgen:
+                return "/certs/{}/{}".format(
+                    name, d.get("certfilename", _certgen.get_cert_filename(d["rank"], d["name"])))
+            else:
+                return ""
+
         def _dict_formatter(d: dict, formats):
-            cert_filename = d.get("certfilename") or CertGen(name, conf["certy"]).get_cert_filename(d["rank"],
-                                                                                                    d["name"])
-            cert_link = "/certs/{}/{}".format(name, cert_filename) if d["rank"] else ""
             # for now we can control the contents
             # d2 = {k: escape(v) for k, v in d.items()}
-            return map(lambda x: x.format(**d, cert_link=cert_link), formats)
+            return map(lambda x: x.format(**d, cert_link=_get_cert_link(d)), formats)
 
         cls = conf["class"]
         headers = zip(cls, th)
@@ -70,6 +82,7 @@ class BBResultView(ResultView):
 4. 增加 成绩单 表： 后缀(单子id)，赛事，显示名，config
 5. admin页面允许调整成绩单 表关联的赛事和显示名。
     """
+
     @lru_cache(maxsize=10)
     def get_racer_logs(self):
         ret = dict()
