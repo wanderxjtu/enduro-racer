@@ -63,6 +63,10 @@ class CompetitionAdmin(admin.ModelAdmin):
             return "比赛中"
         return ""
 
+    def get_changeform_initial_data(self, request):
+        return {'resultConfig':
+                    """{"keys":["rank","no","name","team","start","end","certfilename","result","diff"],"th":["排名<br>Rank","号码<br>No","姓名Name<br>车队Team","发车时间<br>StartAt","撞线时间<br>EndAt","成绩<br>Result","时间差<br>Diff"],"td":["{rank}","{no}","<p>{name}</p><p class=\\"text-secondary\\">{team}</p>","{start}","{end}","{result}","{diff}"],"class":["","","","d-none d-lg-table-cell","d-none d-lg-table-cell","","d-none d-lg-table-cell"],"certy": {"name": "Default", "template": "temp_default", "extra_contents": []}}"""}
+
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
