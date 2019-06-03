@@ -29,6 +29,15 @@ from result.models import ResultsMeta, RacerResults
 from result.read_result_csv import load_hibp_dev_file, LOG
 
 
+def td_format_millisecs(td: timedelta):
+    mm, ss = divmod(td.seconds, 60)
+    hh, mm = divmod(mm, 60)
+    if td.days:
+        hh += td.days * 24
+    s = "%02d:%02d:%02d" % (hh, mm, ss) + ".%03d" % int(td.microseconds / 1000)
+    return s
+
+
 class BBRawResultReader(object):
     """
     self.result = {"group": {no: result_ms, no_2: result_ms_2, ...}, group2_dict}
@@ -84,7 +93,7 @@ class BBRawResultReader(object):
                                             "end": row['finishTime'].strftime("%H:%M:%S.%f")[:-3],
                                             "result": row['result'].strftime("%H:%M:%S.%f")[:-3],
                                             "punishment": str(row['punishment']),
-                                            "diff": str(row['result'] - first)[:-3],
+                                            "diff": td_format_millisecs(row['result'] - first)
                                             })
         return result, loaded_postfixes
 
