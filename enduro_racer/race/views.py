@@ -148,7 +148,7 @@ class CompetitionSignupView(JsonViewMixin, ProcessFormView):
 
         # check_racer_number
         comp = self.get_comp(uniname=self.kwargs['competition_uniname'])
-        if obj["group"] not in comp.groupSetting.strip().split(','):
+        if obj["group"] not in [s.strip() for s in comp.groupSetting.strip().split(',')]:
             return False, "请选择正确的分组".format(comp.manager)
         if not comp.signUpOpen:
             return False, "报名已关闭，请联系管理员！{}".format(comp.manager)
