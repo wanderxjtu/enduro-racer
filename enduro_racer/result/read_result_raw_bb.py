@@ -71,9 +71,12 @@ class BBRawResultReader(object):
     def read_result_from_db(self, name):
         result = OrderedDict()
         loaded_postfixes = list()
-        for row in ResultsMeta.objects.filter(competition__uniname=name, valid=True).values('resultId', 'displayname'):
+        for row in ResultsMeta.objects.filter(competition__uniname=name).values('resultId', 'displayname', 'valid'):
             postfix = row['resultId']
             loaded_postfixes.append(postfix)
+            if not row['valid']:
+                # only return not valid result
+                continue
             displayname = row['displayname']
 
             result[displayname] = list()
@@ -117,6 +120,9 @@ class BBRawResultReader(object):
             if postfix != '' and postfix in loaded_postfixes:
                 # JUST READ ONCE for those already have result
                 continue
+            if postfix == "":
+                # REQUESTED: Not to read ongoing result, cause it needs confirm.
+                continue
             startts, endts = map(load_hibp_dev_file, fs)
 
             if '000' not in startts:
@@ -126,8 +132,9 @@ class BBRawResultReader(object):
 
             try:
                 if postfix:
+                    # save meta, default set valid as False, must be confirmed by admin
                     meta = ResultsMeta(competition=Competition.objects.get(uniname=name),
-                                       displayname=postfix, resultId=postfix)
+                                       displayname=postfix, resultId=postfix, valid=False)
                     meta.save()
             except Exception as e:
                 print(traceback.format_exc())

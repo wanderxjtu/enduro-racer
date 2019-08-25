@@ -6,7 +6,8 @@ from result.models import RacerResults, ResultsMeta
 
 class ResultsAdmin(admin.ModelAdmin):
     list_display = ("get_result_id", "get_result_displayname", "racerTag", "get_realResult_str")
-    readonly_fields = ("racerTag", "launchTime", "finishTime", "realResult", "punishment",)
+    list_filter = ("resultId__displayname", "racerTag")
+    readonly_fields = ("resultId", "launchTime", "finishTime", "realResult", "punishment",)
 
     def get_result_id(self, obj):
         return obj.resultId.resultId
@@ -21,9 +22,23 @@ class ResultsAdmin(admin.ModelAdmin):
 class ResultMetaAdmin(admin.ModelAdmin):
     list_display = ("resultId", "belongs_to_comp", "displayname", "valid")
     readonly_fields = ("resultId",)
+    actions = ("make_valid",)  # "make_invalid")
 
     def belongs_to_comp(self, obj):
         return obj.competition.uniname
+
+    def make_valid(self, request, queryset):
+        for obj in queryset:
+            obj.valid = True
+            obj.save()
+
+    def make_invalid(self, request, queryset):
+        for obj in queryset:
+            obj.valid = False
+            obj.save()
+
+    make_valid.short_description = "设置为有效成绩单"
+    make_invalid.short_description = "设置为无效成绩单"
 
 
 admin.site.register(RacerResults, ResultsAdmin)
