@@ -21,6 +21,7 @@ class ResultsAdmin(admin.ModelAdmin):
 
 class ResultMetaAdmin(admin.ModelAdmin):
     list_display = ("resultId", "belongs_to_comp", "displayname", "valid")
+    list_filter = ("competition__uniname", )
     readonly_fields = ("resultId",)
     actions = ("make_valid",)  # "make_invalid")
 
