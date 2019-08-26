@@ -65,8 +65,8 @@ class BBRawResultReader(object):
         """
         db_r, loaded = self.read_result_from_db(name)
         txt_r = self.read_result_from_file(name, loaded_postfixes=loaded)
-        txt_r.update(db_r)
-        return txt_r
+        # txt_r.update(db_r)  # only show result from db
+        return db_r
 
     def read_result_from_db(self, name):
         result = OrderedDict()
