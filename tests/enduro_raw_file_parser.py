@@ -22,8 +22,28 @@ NotAvailable = "-"
 HibpRawRecord = namedtuple("HibpRawRecord",
                            ("header", "playerno", "timestamp", "ms"))
 
-HibpPlayerMeta = namedtuple("HibpPlayerMeta",
-                            ("playerno", "name", "team", "group"))
+
+class HibpPlayerMeta(object):
+    def __init__(self, playerno, name, team, group):
+        self.playerno = playerno
+        self.name = name
+        self.team = team
+        self.group = group
+
+    @classmethod
+    def load_player_meta(cls, filename="riders_info.csv"):
+        ret = defaultdict(list)
+        try:
+            with open(RawFile(filename).fullpath) as f:
+                for line in f:
+                    items = line.strip().split(',')
+                    logger.debug(items)
+                    h = cls(*items[:4])
+                    ret[int(h.group)].append(h)
+        except Exception as e:
+            logger.error(e)
+        finally:
+            return ret
 
 
 class HibpSingleTimeRecord():
@@ -231,21 +251,6 @@ class StageCommon():
             return ret
 
 
-def load_player_meta(filename="riders_info.csv"):
-    ret = defaultdict(list)
-    try:
-        with open(RawFile(filename).fullpath) as f:
-            for line in f:
-                items = line.strip().split(',')
-                logger.debug(items)
-                h = HibpPlayerMeta(*items[:4])
-                ret[int(h.group)].append(h)
-    except Exception as e:
-        logger.error(e)
-    finally:
-        return ret
-
-
 class GroupingStage():
     def __init__(self, stage: StageCommon, rank2score, qualify_time,
                  **query_result_kwargs):
@@ -323,7 +328,7 @@ Groups = [
 
 
 def read_result():
-    players_by_group = load_player_meta()
+    players_by_group = HibpPlayerMeta.load_player_meta()
     for group in Groups:
         player_results = dict()
         for stage in group.stages:
