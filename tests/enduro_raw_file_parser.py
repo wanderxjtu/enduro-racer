@@ -253,10 +253,14 @@ womenstages = list(
 
 Groups = [
     GroupingConfig("荣誉领骑", 0, menstages),
-    GroupingConfig("男子组", 4, menstages),
-    GroupingConfig("女子组", 3, womenstages),
     GroupingConfig("轻蜂组", 8, menstages),
     GroupingConfig("FREY组", 9, menstages),
+    GroupingConfig("女子组", 3, womenstages),
+    GroupingConfig("男子组", 4, menstages),
+    GroupingConfig("大师A组", 6, menstages),
+    GroupingConfig("大师B组", 7, menstages),
+    GroupingConfig("精英组", 5, menstages),
+    GroupingConfig("青少年组", 2, menstages),
     GroupingConfig("新人组", 1, menstages),
 ]
 
