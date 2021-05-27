@@ -9,7 +9,7 @@ logging.basicConfig(
 logger = logging.getLogger(__file__)
 
 from typing import Union
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import namedtuple, defaultdict
 from enum import Enum
 from threading import RLock
@@ -68,7 +68,7 @@ def time_formatter(t: Union[timedelta, datetime, str]) -> str:
     if isinstance(t, str):
         return t
     if isinstance(t, timedelta):
-        t = datetime.fromtimestamp(0) + t
+        t = datetime.fromtimestamp(0, tz=timezone.utc) + t
     return t.strftime("%H:%M:%S.%f")[:-3]
 
 
@@ -181,8 +181,8 @@ class StageCommon():
 
     def _qualified(self, t, qtime):
         if self.has_trans and isinstance(qtime, timedelta):
-            if t in (NotAvailable):
-                # means that this group do not use this transfer, 
+            if t in (NotAvailable, ):
+                # means that this group do not use this transfer,
                 # but needs to show its result as not available.
                 return True
             if t in (DoNotStart, DidNotFinish):
@@ -286,7 +286,7 @@ womenstages = list(
 
 Groups = [
     GroupingConfig("荣誉领骑", 0, menstages),
-    GroupingConfig("轻蜂组", 8, menstages),
+    GroupingConfig("轻蜂组", 8, motostages),
     GroupingConfig("FREY组", 9, menstages),
     GroupingConfig("女子组", 3, womenstages),
     GroupingConfig("男子组", 4, menstages),
