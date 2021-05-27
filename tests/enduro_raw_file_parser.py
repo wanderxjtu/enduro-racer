@@ -105,8 +105,8 @@ class HibpEnduroTimeRecord():
         if not self.qualified:
             return True
         if self.stage == other.stage:
-            return self.trans > other.trans
-        return self.stage > other.stage
+            return self.trans < other.trans
+        return self.stage < other.stage
 
     def __str__(self):
         if self.stage_config.has_trans:
@@ -300,7 +300,7 @@ MenScoreFunc = Rank2ScoreFactory([500, 450, 420] + list(range(400, 145, -10)) + 
 
 # timelimit
 MenTimeLimit = timedelta(hours=2)
-WomenTimeLimit = timedelta(hours=2)
+WomenTimeLimit = timedelta(hours=3)
 
 # for all men bike stages
 men_stages = GroupingStage.list_factory(AllStages, MenScoreFunc, MenTimeLimit)
@@ -345,7 +345,7 @@ def read_result():
             logger.debug(player_results.values())
             for rank, pr in enumerate(
                     sorted(player_results.values(),
-                           key=lambda x: x.stage_results[-1])):
+                           key=lambda x: x.stage_results[-1], reverse=True)):
                 sscore = stage.rank2score(
                     rank) if pr.stage_results[-1].scored else 0
                 pr.stage_scores.append(sscore)
