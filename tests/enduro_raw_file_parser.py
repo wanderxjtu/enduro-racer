@@ -62,13 +62,12 @@ class HibpSingleTimeRecord():
 DNSRecord = HibpSingleTimeRecord(DoNotStart, DoNotStart, DoNotStart)
 
 
-def time_formatter(t: Union[timedelta, datetime, str],
-                   format="%H:%M:%S") -> str:
+def time_formatter(t: Union[timedelta, datetime, str]) -> str:
     if isinstance(t, str):
         return t
     if isinstance(t, timedelta):
         t = datetime.fromtimestamp(0) + t
-    return t.strftime(format)
+    return t.strftime("%H:%M:%S.%f"[:-3])
 
 
 class HibpEnduroTimeRecord():
@@ -195,7 +194,7 @@ class StageCommon():
                     h = HibpRawRecord(*items)
                     if h.playerno not in ret:
                         dt = datetime.fromtimestamp(int(
-                            h.timestamp)).replace(microsecond=int(h.ms))
+                            h.timestamp)).replace(microsecond=int(h.ms)*1000)
                         ret[h.playerno] = dt
         except Exception as e:
             logger.error(e)
