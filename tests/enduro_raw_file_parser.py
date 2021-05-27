@@ -112,7 +112,7 @@ class HibpPlayerRecords():
     def __lt__(self, other):
         # means slower here, or more time, or less points
         if self.finalscore == other.finalscore:
-            for i in range(len(self.stage_results)-1, -1, -1):
+            for i in range(len(self.stage_results) - 1, -1, -1):
                 if self.stage_scores[i] == other.stage_scores[i]:
                     continue
                 return self.stage_scores[i] < other.stage_scores[i]
