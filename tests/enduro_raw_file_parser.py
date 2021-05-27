@@ -181,7 +181,13 @@ class StageCommon():
 
     def _qualified(self, t, qtime):
         if self.has_trans and isinstance(qtime, timedelta):
-            if t not in (DoNotStart, DidNotFinish, NotAvailable):
+            if t in (NotAvailable):
+                # means that this group do not use this transfer, 
+                # but needs to show its result as not available.
+                return True
+            if t in (DoNotStart, DidNotFinish):
+                return False
+            else:
                 return t <= qtime
         return True
 
