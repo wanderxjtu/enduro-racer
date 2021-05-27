@@ -17,6 +17,7 @@ from threading import RLock
 Disqualified = "DSQ"
 DoNotStart = "DNS"
 DidNotFinish = "DNF"
+NotAvailable = "-"
 
 HibpRawRecord = namedtuple("HibpRawRecord",
                            ("header", "playerno", "timestamp", "ms"))
@@ -60,6 +61,7 @@ class HibpSingleTimeRecord():
 
 
 DNSRecord = HibpSingleTimeRecord(DoNotStart, DoNotStart, DoNotStart)
+IGRecord = HibpSingleTimeRecord(NotAvailable, NotAvailable, NotAvailable)
 
 
 def time_formatter(t: Union[timedelta, datetime, str]) -> str:
@@ -71,10 +73,11 @@ def time_formatter(t: Union[timedelta, datetime, str]) -> str:
 
 
 class HibpEnduroTimeRecord():
-    def __init__(self, trans, stage, qualified=True):
+    def __init__(self, trans, stage, qualified=True, *, stage_config=None):
         self.trans = trans
         self.stage = stage
         self.qualified = qualified
+        self.stage_config = stage_config
 
     def __lt__(self, other):
         # means slower here, or more time, or less points
@@ -86,7 +89,9 @@ class HibpEnduroTimeRecord():
         return self.stage > other.stage
 
     def __str__(self):
-        return f"{self.trans},{self.stage}"
+        if self.stage_config.has_trans:
+            return f"{self.trans},{self.stage}"
+        return str(self.stage)
 
     @property
     def scored(self):
@@ -135,6 +140,9 @@ class RacingMode(Enum):
 
 
 class StageCommon():
+    # this class decribes a stage's common meta info
+    # for grouping specific meta, such as qualify_time for different group,
+    # a Grouping stage object should be used.
     def __init__(self, index: int, *, has_trans):
         self.has_trans = has_trans
         self.trans_filepair = ("t%ds.txt" % index,
@@ -152,18 +160,28 @@ class StageCommon():
                 *self.trans_filepair) if self.trans_filepair else dict()
             self._stage_results = self._filepair_parse(*self.stage_filepair)
 
-    def query_result(self, player, qualify_time=None) -> HibpEnduroTimeRecord:
+    def query_result(self,
+                     player,
+                     qualify_time=None,
+                     *,
+                     default_trans_record=DNSRecord,
+                     default_stage_record=DNSRecord) -> HibpEnduroTimeRecord:
         if self._stage_results is None:
             self._calc_results()
-        trans, stage = (self._trans_results.get(player.playerno, DNSRecord),
-                        self._stage_results.get(player.playerno, DNSRecord))
+        trans, stage = (self._trans_results.get(player.playerno,
+                                                default_trans_record),
+                        self._stage_results.get(player.playerno,
+                                                default_stage_record))
 
-        return HibpEnduroTimeRecord(
-            trans, stage, self._qualified(trans.result, qualify_time))
+        return HibpEnduroTimeRecord(trans,
+                                    stage,
+                                    self._qualified(trans.result,
+                                                    qualify_time),
+                                    stage_config=self)
 
     def _qualified(self, t, qtime):
         if self.has_trans and isinstance(qtime, timedelta):
-            if t not in (DoNotStart, DidNotFinish):
+            if t not in (DoNotStart, DidNotFinish, NotAvailable):
                 return t <= qtime
         return True
 
@@ -194,7 +212,7 @@ class StageCommon():
                     h = HibpRawRecord(*items)
                     if h.playerno not in ret:
                         dt = datetime.fromtimestamp(int(
-                            h.timestamp)).replace(microsecond=int(h.ms)*1000)
+                            h.timestamp)).replace(microsecond=int(h.ms) * 1000)
                         ret[h.playerno] = dt
         except Exception as e:
             logger.error(e)
@@ -209,10 +227,12 @@ AllStages = [
 
 
 class GroupingStage():
-    def __init__(self, stage: StageCommon, rank2score, qualify_time):
+    def __init__(self, stage: StageCommon, rank2score, qualify_time,
+                 **query_result_kwargs):
         self.stage = stage
         self.rank2score = rank2score
         self.qualify_time = qualify_time
+        self.query_result_kwargs = query_result_kwargs
 
     def __repr__(self):
         return f"{self.stage.trans_filepair},{self.stage.stage_filepair},{self.qualify_time}"
@@ -239,9 +259,16 @@ menscorelist = [500, 450, 420] + list(range(400, 145, -10)) + list(
 logger.debug(menscorelist)
 mentimelimt = timedelta(hours=2)
 menstages = list(
+    map(lambda x: GroupingStage(x, rank2score_scorelist(menscorelist), None),
+        AllStages))
+
+# for sur-ron like e-moto bikes
+motostages = list(
     map(
-        lambda x: GroupingStage(x, rank2score_scorelist(menscorelist),
-                                mentimelimt), AllStages))
+        lambda x: GroupingStage(x,
+                                rank2score_scorelist(menscorelist),
+                                mentimelimt,
+                                default_trans_record=IGRecord), AllStages))
 
 womenscorelist = [400, 350, 320] + list(range(300, 5, -10)) + [5, 1]
 logger.debug(womenscorelist)
@@ -289,7 +316,8 @@ def read_result():
             for player in players_by_group[group.index]:
                 if not player_results.get(player.playerno):
                     player_results[player.playerno] = HibpPlayerRecords(player)
-                timerec = stage.stage.query_result(player, stage.qualify_time)
+                timerec = stage.stage.query_result(player, stage.qualify_time,
+                                                   **stage.query_result_kwargs)
                 player_results[player.playerno].stage_results.append(timerec)
                 assert timerec.stage is not None, f"{player},{timerec},{stage}"
             # sort
