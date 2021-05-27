@@ -67,7 +67,7 @@ def time_formatter(t: Union[timedelta, datetime, str]) -> str:
         return t
     if isinstance(t, timedelta):
         t = datetime.fromtimestamp(0) + t
-    return t.strftime("%H:%M:%S.%f"[:-3])
+    return t.strftime("%H:%M:%S.%f")[:-3]
 
 
 class HibpEnduroTimeRecord():
@@ -109,7 +109,7 @@ class HibpPlayerRecords():
         return self.finalscore < other.finalscore
 
     def __str__(self):
-        s = f"{self.player.name},{self.player.playerno},{self.player.team},"
+        s = f"{self.player.playerno},{self.player.name},{self.player.team},"
         for t, sr in zip(self.stage_results, self.stage_scores):
             s += f"{t},{sr},"
         return s + f"{self.finalscore}"
