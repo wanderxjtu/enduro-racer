@@ -287,10 +287,6 @@ class Rank2ScoreFactory(object):
 ################################################################
 # race configurations start from here
 
-# rank to score function
-WomenScoreFunc = Rank2ScoreFactory([400, 350, 320] + list(range(300, 5, -10)) + [5, 1])
-MenScoreFunc = Rank2ScoreFactory([500, 450, 420] + list(range(400, 145, -10)) + list(range(145, 49, -5)) + list(range(49, 0, -1)))
-
 # Config stage info here.
 AllStages = [
     StageCommon(1, has_trans=True),
@@ -298,6 +294,11 @@ AllStages = [
     StageCommon(3, has_trans=False),
 ]
 
+# rank to score function
+WomenScoreFunc = Rank2ScoreFactory([400, 350, 320] + list(range(300, 5, -10)) + [5, 1])
+MenScoreFunc = Rank2ScoreFactory([500, 450, 420] + list(range(400, 145, -10)) + list(range(145, 49, -5)) + list(range(49, 0, -1)))
+
+# timelimit
 MenTimeLimit = timedelta(hours=2)
 WomenTimeLimit = timedelta(hours=2)
 
