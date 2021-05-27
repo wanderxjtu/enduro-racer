@@ -231,78 +231,6 @@ class StageCommon():
             return ret
 
 
-AllStages = [
-    StageCommon(1, has_trans=True),
-    StageCommon(2, has_trans=True),
-]
-
-
-class GroupingStage():
-    def __init__(self, stage: StageCommon, rank2score, qualify_time,
-                 **query_result_kwargs):
-        self.stage = stage
-        self.rank2score = rank2score
-        self.qualify_time = qualify_time
-        self.query_result_kwargs = query_result_kwargs
-
-    def __repr__(self):
-        return f"{self.stage.trans_filepair},{self.stage.stage_filepair},{self.qualify_time}"
-
-
-class GroupingConfig():
-    def __init__(self, name, index, stages):
-        self.name = name
-        self.index = index
-        self.stages = stages
-
-
-def rank2score_scorelist(scorelist):
-    def _inner(rank):
-        if rank < len(scorelist):
-            return scorelist[rank]
-        return 0
-
-    return _inner
-
-
-menscorelist = [500, 450, 420] + list(range(400, 145, -10)) + list(
-    range(145, 49, -5)) + list(range(49, 0, -1))
-logger.debug(menscorelist)
-mentimelimt = timedelta(hours=2)
-menstages = list(
-    map(lambda x: GroupingStage(x, rank2score_scorelist(menscorelist), None),
-        AllStages))
-
-# for sur-ron like e-moto bikes
-motostages = list(
-    map(
-        lambda x: GroupingStage(x,
-                                rank2score_scorelist(menscorelist),
-                                mentimelimt,
-                                default_trans_record=IGRecord), AllStages))
-
-womenscorelist = [400, 350, 320] + list(range(300, 5, -10)) + [5, 1]
-logger.debug(womenscorelist)
-womentimelimt = timedelta(hours=2)
-womenstages = list(
-    map(
-        lambda x: GroupingStage(x, rank2score_scorelist(womenscorelist),
-                                womentimelimt), AllStages))
-
-Groups = [
-    GroupingConfig("荣誉领骑", 0, menstages),
-    GroupingConfig("轻蜂组", 8, motostages),
-    GroupingConfig("FREY组", 9, menstages),
-    GroupingConfig("女子组", 3, womenstages),
-    GroupingConfig("男子组", 4, menstages),
-    GroupingConfig("大师A组", 6, menstages),
-    GroupingConfig("大师B组", 7, menstages),
-    GroupingConfig("精英组", 5, menstages),
-    GroupingConfig("青少年组", 2, menstages),
-    GroupingConfig("新人组", 1, menstages),
-]
-
-
 def load_player_meta(filename="riders_info.csv"):
     ret = defaultdict(list)
     try:
@@ -316,6 +244,82 @@ def load_player_meta(filename="riders_info.csv"):
         logger.error(e)
     finally:
         return ret
+
+
+class GroupingStage():
+    def __init__(self, stage: StageCommon, rank2score, qualify_time,
+                 **query_result_kwargs):
+        self.stage = stage
+        self.rank2score = rank2score
+        self.qualify_time = qualify_time
+        self.query_result_kwargs = query_result_kwargs
+
+    def __repr__(self):
+        return f"{self.stage.trans_filepair},{self.stage.stage_filepair},{self.qualify_time}"
+
+    @classmethod
+    def list_factory(cls, stage_list: list, rank2score, qualify_time, **query_result_kwargs):
+        return list(map(lambda x:cls(x, rank2score, qualify_time, **query_result_kwargs), stage_list))
+
+
+class GroupingConfig():
+    def __init__(self, name, index, stages):
+        self.name = name
+        self.index = index
+        self.stages = stages
+
+
+class Rank2ScoreFactory(object):
+    def __init__(self, scorelist: list):
+        self._scorelist = scorelist
+        self._predefscores = len(scorelist)
+
+    def __call__(self, rank: int) -> int:
+        if rank < self._predefscores:
+            return self._scorelist[rank]
+        return 0
+
+################################################################
+# race configurations start from here
+
+# rank to score function
+WomenScoreFunc = Rank2ScoreFactory([400, 350, 320] + list(range(300, 5, -10)) + [5, 1])
+MenScoreFunc = Rank2ScoreFactory([500, 450, 420] + list(range(400, 145, -10)) + list(range(145, 49, -5)) + list(range(49, 0, -1)))
+
+# Config stage info here.
+AllStages = [
+    StageCommon(1, has_trans=True),
+    StageCommon(2, has_trans=False),
+    StageCommon(3, has_trans=False),
+]
+
+MenTimeLimit = timedelta(hours=2)
+WomenTimeLimit = timedelta(hours=2)
+
+# for all men bike stages
+men_stages = GroupingStage.list_factory(AllStages, MenScoreFunc, MenTimeLimit)
+# for sur-ron like e-moto bikes
+emoto_stages = GroupingStage.list_factory(AllStages, MenScoreFunc, MenTimeLimit, default_trans_record=IGRecord)
+# for women bike stages
+women_stages = GroupingStage.list_factory(AllStages, WomenScoreFunc, WomenTimeLimit)
+
+# groups config
+# does not affect result if not exist
+Groups = [
+    GroupingConfig("荣誉领骑", 0, men_stages),
+    GroupingConfig("轻蜂组", 8, emoto_stages),
+    GroupingConfig("FREY组", 9, men_stages),
+    GroupingConfig("女子组", 3, women_stages),
+    GroupingConfig("男子组", 4, men_stages),
+    GroupingConfig("大师A组", 6, men_stages),
+    GroupingConfig("大师B组", 7, men_stages),
+    GroupingConfig("精英组", 5, men_stages),
+    GroupingConfig("青少年组", 2, men_stages),
+    GroupingConfig("新人组", 1, men_stages),
+]
+
+# race configurations end
+################################################################
 
 
 def read_result():
